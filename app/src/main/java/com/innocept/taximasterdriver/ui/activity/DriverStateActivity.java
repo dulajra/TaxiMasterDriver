@@ -1,6 +1,9 @@
-package com.innocept.taximasterdriver.ui.activities;
+package com.innocept.taximasterdriver.ui.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.innocept.taximasterdriver.ApplicationContext;
+import com.innocept.taximasterdriver.ApplicationPreferences;
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.model.foundation.State;
 import com.innocept.taximasterdriver.presenter.DriverStatePresenter;
@@ -41,6 +46,8 @@ public class DriverStateActivity extends AppCompatActivity {
             driverStatePresenter = DriverStatePresenter.getInstance();
         }
         driverStatePresenter.setView(this);
+        intiUI();
+        grantLocationAccessPermission();
     }
 
     public void stateChangePressed(View view) {
@@ -57,6 +64,49 @@ public class DriverStateActivity extends AppCompatActivity {
             case R.id.button_state_not_in_service:
                 driverStatePresenter.changeState(State.NOT_IN_SERVICE);
                 break;
+        }
+    }
+
+    private void intiUI(){
+        if(ApplicationPreferences.getCurrentState()!=null){
+            State state = State.valueOf(ApplicationPreferences.getCurrentState());
+            switch (state) {
+                case AVAILABLE:
+                    buttonAvailable.setEnabled(false);
+                    buttonGoingForHire.setEnabled(true);
+                    buttonInHire.setEnabled(true);
+                    buttonNotInService.setEnabled(true);
+                    setLocationMode(true);
+                    break;
+                case GOING_FOR_HIRE:
+                    buttonAvailable.setEnabled(true);
+                    buttonGoingForHire.setEnabled(false);
+                    buttonInHire.setEnabled(true);
+                    buttonNotInService.setEnabled(true);
+                    setLocationMode(true);
+                    break;
+                case IN_HIRE:
+                    buttonAvailable.setEnabled(true);
+                    buttonGoingForHire.setEnabled(true);
+                    buttonInHire.setEnabled(false);
+                    buttonNotInService.setEnabled(true);
+                    setLocationMode(true);
+                    break;
+                case NOT_IN_SERVICE:
+                    buttonAvailable.setEnabled(true);
+                    buttonGoingForHire.setEnabled(true);
+                    buttonInHire.setEnabled(true);
+                    buttonNotInService.setEnabled(false);
+                    setLocationMode(false);
+                    break;
+            }
+        }
+    }
+
+    public void grantLocationAccessPermission(){
+        if (ActivityCompat.checkSelfPermission(ApplicationContext.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ApplicationContext.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
         }
     }
 

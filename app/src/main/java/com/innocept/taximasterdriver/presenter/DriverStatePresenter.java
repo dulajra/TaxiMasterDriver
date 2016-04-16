@@ -5,13 +5,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.innocept.taximasterdriver.ApplicationPreferences;
 import com.innocept.taximasterdriver.model.Communicator;
 import com.innocept.taximasterdriver.model.foundation.State;
 import com.innocept.taximasterdriver.model.location.AlarmReceiver;
-import com.innocept.taximasterdriver.ui.activities.DriverStateActivity;
+import com.innocept.taximasterdriver.ui.activity.DriverStateActivity;
 
 /**
  * Created by Dulaj on 14-Apr-16.
@@ -54,13 +53,14 @@ public class DriverStatePresenter {
             }
 
             @Override
-            protected void onPostExecute(Boolean b) {
-                super.onPostExecute(b);
-                view.releaseUI(state, b);
-                setLocationUpdates(state);
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                view.releaseUI(state, result);
+                if(result){
+                    setLocationUpdates(state);
+                }
             }
         }.execute();
-        
     }
 
     public void setLocationUpdates(State state){
