@@ -60,6 +60,7 @@ public class DriverStatePresenter {
                 setLocationUpdates(state);
             }
         }.execute();
+        
     }
 
     public void setLocationUpdates(State state){
