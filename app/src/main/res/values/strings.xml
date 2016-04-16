@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Taxi Master Driver</string>
+
+    <string name="message_driver_update_failed">Something went wrong. Try again!</string>
+</resources>
