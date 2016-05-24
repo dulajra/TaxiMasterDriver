@@ -54,7 +54,7 @@ public class LoginPresenter {
                         view.onSignInSuccess();
                         break;
                     case 1:
-                        view.onSignInFailed("Incorrect password");
+                        view.onSignInFailed("Username or password is incorrect");
                         break;
                     case 2:
                         view.onSignInFailed("Username not exists");

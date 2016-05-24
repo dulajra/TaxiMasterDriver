@@ -12,6 +12,10 @@ import com.innocept.taximasterdriver.model.foundation.State;
 /**
  * Created by Dulaj on 16-Apr-16.
  */
+
+/**
+ * Actions regarding all the user preferences of the application.
+ */
 public class ApplicationPreferences {
 
     private static ApplicationPreferences instance = null;
@@ -29,7 +33,6 @@ public class ApplicationPreferences {
     }
 
 //    All getters go here
-
     public static Driver getDriver(){
         init();
         return new Gson().fromJson(sharedPreferences.getString("driver", null), Driver.class);
@@ -43,7 +46,7 @@ public class ApplicationPreferences {
 
     public static String getCurrentState(){
         init();
-        return sharedPreferences.getString("state", null);
+        return sharedPreferences.getString("state", State.NOT_IN_SERVICE.toString()git );
     }
 
 //    All setters go here

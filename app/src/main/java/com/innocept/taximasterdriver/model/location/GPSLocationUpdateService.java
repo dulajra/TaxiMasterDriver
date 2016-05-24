@@ -133,7 +133,7 @@ public class GPSLocationUpdateService extends IntentService implements GoogleApi
     }
 
     private void sendLocationToServer() {
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 Communicator communicator = new Communicator();

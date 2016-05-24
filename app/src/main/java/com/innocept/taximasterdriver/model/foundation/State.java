@@ -5,10 +5,10 @@ package com.innocept.taximasterdriver.model.foundation;
  */
 public enum State {
 
-    AVAILABLE(1),
-    IN_HIRE(2),
-    NOT_IN_SERVICE(3),
-    GOING_FOR_HIRE(4);
+    NOT_IN_SERVICE(1),
+    AVAILABLE(2),
+    GOING_FOR_HIRE(3),
+    IN_HIRE(4);
 
     int value;
 

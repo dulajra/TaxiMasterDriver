@@ -26,6 +26,10 @@ import com.innocept.taximasterdriver.presenter.LoginPresenter;
 /**
  * Created by Dulaj on 16-Apr-16.
  */
+
+/**
+ * User login here
+ */
 public class LoginActivity extends AppCompatActivity {
 
     LoginPresenter loginPresenter;;
@@ -48,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         loginPresenter.setView(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Sign In");
         setSupportActionBar(toolbar);
 
         inputLayoutUserName = (TextInputLayout) findViewById(R.id.input_layout_username);
@@ -151,6 +156,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onSignInSuccess(){
         progressBar.setVisibility(View.GONE);
         startActivity(new Intent(LoginActivity.this, DriverStateActivity.class));
+        this.finish();
     }
 
 

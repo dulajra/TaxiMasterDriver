@@ -41,7 +41,7 @@ public class Communicator{
 
     private final String TAG = Communicator.class.getSimpleName();
 
-    private final String URL_ROOT = "http://485ff9b7.ngrok.io";
+    private final String URL_ROOT = "http://be963632.ngrok.io";
     private final String URL_UPDATE_STATE = URL_ROOT + "/driver/update/state";
     private final String URL_UPDATE_LOCATION = URL_ROOT + "/driver/update/location";
     private final String URL_LOGIN = URL_ROOT + "/driver/login";
@@ -118,7 +118,7 @@ public class Communicator{
                         break;
                     case 1:
                         resultCode = 1;
-                        Log.i(TAG, "Incorrect password");
+                        Log.i(TAG, "Username or password is incorrect");
                         break;
                     case 2:
                         resultCode = 2;

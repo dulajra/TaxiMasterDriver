@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ public class DriverStateActivity extends AppCompatActivity {
 
     DriverStatePresenter driverStatePresenter;
 
+    private Toolbar toolbar;
     Button buttonAvailable;
     Button buttonGoingForHire;
     Button buttonInHire;
@@ -35,12 +37,19 @@ public class DriverStateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_state);
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+//        getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         buttonAvailable = (Button) findViewById(R.id.button_state_available);
         buttonGoingForHire = (Button) findViewById(R.id.button_state_going_for_hire);
         buttonInHire = (Button) findViewById(R.id.button_state_in_hire);
         buttonNotInService = (Button) findViewById(R.id.button_state_not_in_service);
         switchLocationUpdates = (Switch)findViewById(R.id.switch_location_updates);
         progressBar = (ProgressBar) findViewById(R.id.progressbar_update_state);
+
+        switchLocationUpdates.setClickable(false);
 
         if (driverStatePresenter == null) {
             driverStatePresenter = DriverStatePresenter.getInstance();
