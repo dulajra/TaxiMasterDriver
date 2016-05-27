@@ -1,9 +1,11 @@
 package com.innocept.taximasterdriver.model.foundation;
 
+import java.io.Serializable;
+
 /**
  * Created by Dulaj on 14-Apr-16.
  */
-public class Location {
+public class Location implements Serializable {
 
     private double longitude;
     private double latitude;

@@ -118,7 +118,7 @@ public class GPSLocationUpdateService extends IntentService implements GoogleApi
     @Override
     public void onLocationChanged(Location location) {
         // Assign the new location
-        Log.i("TAG", "Location updated: Lat = " + location.getLatitude() + ", Long = " + location.getLongitude() + ", Accuracy = " + location.getAccuracy());
+        Log.v("TAG", "Location updated: Lat = " + location.getLatitude() + ", Long = " + location.getLongitude() + ", Accuracy = " + location.getAccuracy());
         if (mLastLocation == null) {
             mLastLocation = location;
         } else if (mLastLocation.getAccuracy() > location.getAccuracy()) {

@@ -14,18 +14,45 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
-        <activity android:name=".ui.activity.SplashActivity">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC4j_LRXzLBu3_ANhztr0YV8dUevvgADJE" />
+
+        <meta-data
+            android:name="com.onesignal.NotificationOpened.DEFAULT"
+            android:value="DISABLE" />
+
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.LoginActivity"/>
-        <activity android:name=".ui.activity.DriverStateActivity"/>
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait" />
 
-        <service android:name=".model.location.GPSLocationUpdateService"/>
-        <receiver android:name=".model.location.AlarmReceiver"/>
+        <activity
+            android:name=".ui.activity.DriverStateActivity"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".model.location.GPSLocationUpdateService" />
+        <receiver android:name=".model.location.AlarmReceiver" />
+
+        <activity
+            android:name=".ui.activity.NewOrderActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activity.DriverStateActivity"/>
+
+        <activity
+            android:name=".ui.activity.OrderListActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activity.DriverStateActivity"/>
+
     </application>
 
 </manifest>

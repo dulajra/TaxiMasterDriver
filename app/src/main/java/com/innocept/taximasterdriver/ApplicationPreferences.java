@@ -46,7 +46,7 @@ public class ApplicationPreferences {
 
     public static String getCurrentState(){
         init();
-        return sharedPreferences.getString("state", State.NOT_IN_SERVICE.toString()git );
+        return sharedPreferences.getString("state", State.NOT_IN_SERVICE.toString());
     }
 
 //    All setters go here
@@ -63,6 +63,18 @@ public class ApplicationPreferences {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("state", state.toString());
         editor.commit();
+    }
+
+    public static void setOneSignalUserId(String id){
+        init();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("oneSignalUserId", id);
+        editor.commit();
+    }
+
+    public static String getOneSignalUserId(){
+        init();
+        return sharedPreferences.getString("oneSignalUserId", null);
     }
 
 }

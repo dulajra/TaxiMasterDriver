@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="message_driver_update_failed">Something went wrong. Try again!</string>
+    <string name="message_new_order_response_failed">Something went wrong. Try again!</string>
 
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
