@@ -135,7 +135,7 @@ public class Communicator{
         ContentValues values = new ContentValues();
         values.put("orderId", orderId);
         values.put("isAccepted", isAccepted);
-        String  response = HTTPHandler.sendGET(URL_RESPOND_TO_NEW_ORDER, values);
+        String  response = HTTPHandler.sendPOST(URL_RESPOND_TO_NEW_ORDER, values);
 
         if (response != null) {
             try {

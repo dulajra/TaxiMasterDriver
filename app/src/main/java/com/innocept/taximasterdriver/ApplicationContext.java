@@ -3,6 +3,7 @@ package com.innocept.taximasterdriver;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.innocept.taximasterdriver.model.foundation.Location;
 import com.innocept.taximasterdriver.model.foundation.Order;

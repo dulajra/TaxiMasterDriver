@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -24,7 +26,7 @@ import java.text.SimpleDateFormat;
 /**
  * Created by dulaj on 5/25/16.
  */
-public class NewOrderActivity extends FragmentActivity implements OnMapReadyCallback {
+public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     NewOrderPresenter newOrderPresenter;
 
@@ -47,6 +49,7 @@ public class NewOrderActivity extends FragmentActivity implements OnMapReadyCall
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Newly received order");
+        setSupportActionBar(toolbar);
 
         if (newOrderPresenter == null) {
             newOrderPresenter  = NewOrderPresenter.getInstance();
