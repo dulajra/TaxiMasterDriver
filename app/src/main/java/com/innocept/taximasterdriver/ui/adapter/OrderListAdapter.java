@@ -1,16 +1,19 @@
 package com.innocept.taximasterdriver.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.model.foundation.Order;
+import com.innocept.taximasterdriver.ui.activity.NewOrderActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,6 +33,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout linearLayoutOrderListItem;
         TextView textFromTo;
         TextView textTime;
         TextView textContact;
@@ -39,6 +43,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         public ViewHolder(View itemView) {
             super(itemView);
 
+            linearLayoutOrderListItem = (LinearLayout)itemView.findViewById(R.id.linear_order_list_item);
             textFromTo = (TextView) itemView.findViewById(R.id.text_order_list_from_to);
             textTime = (TextView) itemView.findViewById(R.id.text_order_list_time);
             textContact = (TextView)itemView.findViewById(R.id.text_order_list_contact);
@@ -79,6 +84,20 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             viewHolder.textState.setTextColor(Color.GREEN);
         }
         viewHolder.textState.setText(orderState.toString());
+
+        viewHolder.linearLayoutOrderListItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(dataSet.get(position).getOrderState() == Order.OrderState.PENDING){
+                    Intent intent = new Intent(context, NewOrderActivity.class);
+                    intent.putExtra("order", dataSet.get(position));
+                    context.startActivity(intent);
+                }
+                else if(dataSet.get(position).getOrderState() == Order.OrderState.ACCEPTED){
+
+                }
+            }
+        });
     }
 
     // Return the size of your data set (invoked by the layout manager)

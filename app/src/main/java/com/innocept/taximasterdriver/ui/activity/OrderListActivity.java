@@ -1,5 +1,6 @@
 package com.innocept.taximasterdriver.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.presenter.OrderListPresenter;
-import com.innocept.taximasterdriver.ui.fragment.OrderFragment;
+import com.innocept.taximasterdriver.ui.fragment.FinishedOrderFragment;
+import com.innocept.taximasterdriver.ui.fragment.OnGoingOrderFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +37,8 @@ public class OrderListActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    public OrderFragment onGoingOrderFragment;
-    public OrderFragment finishedOrderFragment;
+    public OnGoingOrderFragment onGoingOrderFragment;
+    public FinishedOrderFragment finishedOrderFragment;
 
     boolean isTouchable = true;
 
@@ -60,7 +63,6 @@ public class OrderListActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -70,11 +72,9 @@ public class OrderListActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
-//        submit();
     }
 
     public void submit() {
@@ -83,11 +83,15 @@ public class OrderListActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        onGoingOrderFragment = new OrderFragment();
-        finishedOrderFragment = new OrderFragment();
+        onGoingOrderFragment = new OnGoingOrderFragment();
+        finishedOrderFragment = new FinishedOrderFragment();
         adapter.addFragment(onGoingOrderFragment, "ON GOING");
         adapter.addFragment(finishedOrderFragment, "FINISHED");
         viewPager.setAdapter(adapter);
+    }
+
+    public void openDriverStateActivity(View view) {
+        startActivity(new Intent(OrderListActivity.this, DriverStateActivity.class));
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

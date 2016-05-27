@@ -54,24 +54,28 @@
                 android:id="@+id/text_new_order_from_to"
                 style="@style/NewOrderItem"
                 android:text="Colombo to Moratuwa"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:maxLines="2"/>
 
 
             <TextView
                 android:id="@+id/text_new_order_time"
                 style="@style/NewOrderItem"
-                android:text="2016-01-01 13:30" />
+                android:text="2016-01-01 13:30"
+                android:maxLines="1"/>
 
             <TextView
                 android:id="@+id/text_new_order_contact"
                 style="@style/NewOrderItem"
                 android:text="0777123456"
-                android:autoLink="phone"/>
+                android:autoLink="phone"
+                android:maxLines="1"/>
 
             <TextView
                 android:id="@+id/text_new_order_note"
                 style="@style/NewOrderItem"
-                android:text="Note" />
+                android:text="Note"
+                android:maxLines="2"/>
 
             <LinearLayout
                 android:layout_height="0dp"

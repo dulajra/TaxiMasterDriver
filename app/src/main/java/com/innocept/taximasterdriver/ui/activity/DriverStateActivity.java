@@ -1,6 +1,7 @@
 package com.innocept.taximasterdriver.ui.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
@@ -171,6 +172,10 @@ public class DriverStateActivity extends AppCompatActivity {
 
     public  void setLocationMode(boolean isOn){
         switchLocationUpdates.setChecked(isOn);
+    }
+
+    public void openOrderListActivity(View view) {
+        startActivity(new Intent(DriverStateActivity.this, OrderListActivity.class));
     }
 
 }

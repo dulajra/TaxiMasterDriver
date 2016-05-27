@@ -46,7 +46,7 @@
         <activity
             android:name=".ui.activity.NewOrderActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".ui.activity.DriverStateActivity"/>
+            android:parentActivityName=".ui.activity.OrderListActivity"/>
 
         <activity
             android:name=".ui.activity.OrderListActivity"

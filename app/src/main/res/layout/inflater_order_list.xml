@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/linear_taxi_list_item"
+        android:id="@+id/linear_order_list_item"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginLeft="10dp"
@@ -27,7 +27,7 @@
         <TextView
             android:id="@+id/text_order_list_note"
             style="@style/TaxiListItem"
-            android:text="2016-01-01 13:30" />
+            android:text="Note" />
 
         <LinearLayout
             style="@style/TaxiListItem"
@@ -36,7 +36,8 @@
             <TextView
                 android:id="@+id/text_order_list_contact"
                 style="@style/TaxiListItem"
-                android:text="Driver Name" />
+                android:text="0712755777"
+                android:autoLink="phone"/>
 
             <TextView
                 android:id="@+id/text_order_list_state"

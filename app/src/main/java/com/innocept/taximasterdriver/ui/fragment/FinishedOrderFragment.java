@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.ProgressBar;
 
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.model.foundation.Order;
-import com.innocept.taximasterdriver.ui.activity.OrderListActivity;
 import com.innocept.taximasterdriver.ui.adapter.OrderListAdapter;
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ import java.util.List;
 /**
  * Created by dulaj on 5/24/16.
  */
-public class OrderFragment extends Fragment {
+public class FinishedOrderFragment extends Fragment {
 
-    private final String DEBUG_TAG = OrderFragment.class.getSimpleName();
+    private final String DEBUG_TAG = FinishedOrderFragment.class.getSimpleName();
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
@@ -32,7 +32,7 @@ public class OrderFragment extends Fragment {
 
     private List<Order> dataSet;
 
-    public OrderFragment() {
+    public FinishedOrderFragment() {
         // Required empty public constructor
     }
 
@@ -53,7 +53,6 @@ public class OrderFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new OrderListAdapter(getActivity(), dataSet);
         recyclerView.setAdapter(adapter);
-        ((OrderListActivity)getActivity()).submit();
         return rootView;
     }
 

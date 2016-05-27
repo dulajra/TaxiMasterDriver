@@ -1,13 +1,13 @@
 package com.innocept.taximasterdriver.presenter;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.innocept.taximasterdriver.ApplicationPreferences;
 import com.innocept.taximasterdriver.model.Communicator;
 import com.innocept.taximasterdriver.model.foundation.Order;
 import com.innocept.taximasterdriver.ui.activity.OrderListActivity;
-import com.innocept.taximasterdriver.ui.fragment.OrderFragment;
+import com.innocept.taximasterdriver.ui.fragment.FinishedOrderFragment;
+import com.innocept.taximasterdriver.ui.fragment.OnGoingOrderFragment;
 
 import java.util.List;
 
@@ -25,8 +25,8 @@ public class OrderListPresenter {
     private static OrderListPresenter instance = null;
     private OrderListActivity view;
 
-    private OrderFragment onGoingFragment;
-    private OrderFragment finishedOrderFragment;
+    private OnGoingOrderFragment onGoingFragment;
+    private FinishedOrderFragment finishedOrderFragment;
 
     private OrderListPresenter() {
     }
