@@ -3,6 +3,7 @@ package com.innocept.taximasterdriver;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import com.innocept.taximasterdriver.model.foundation.Location;
@@ -42,6 +43,12 @@ public class ApplicationContext extends Application{
         });
 
         OneSignal.sendTag("userType", "taxiDriver");
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     public static Context getContext(){

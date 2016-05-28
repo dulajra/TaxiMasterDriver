@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".ApplicationContext"
@@ -52,6 +54,11 @@
             android:name=".ui.activity.OrderListActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".ui.activity.DriverStateActivity"/>
+
+        <activity
+            android:name=".ui.activity.CurrentOrderActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ui.activity.OrderListActivity"/>
 
     </application>
 

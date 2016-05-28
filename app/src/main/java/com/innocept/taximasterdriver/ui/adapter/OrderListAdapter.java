@@ -1,9 +1,13 @@
 package com.innocept.taximasterdriver.ui.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.innocept.taximasterdriver.R;
+import com.innocept.taximasterdriver.model.Communicator;
 import com.innocept.taximasterdriver.model.foundation.Order;
+import com.innocept.taximasterdriver.model.foundation.State;
+import com.innocept.taximasterdriver.ui.activity.CurrentOrderActivity;
 import com.innocept.taximasterdriver.ui.activity.NewOrderActivity;
 
 import java.text.SimpleDateFormat;
@@ -22,6 +29,8 @@ import java.util.List;
  * Created by Dulaj on 30-Dec-15.
  */
 public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.ViewHolder> {
+
+    private final String DEBUG_TAG = OrderListAdapter.class.getSimpleName();
 
     Context context;
     private List<Order> dataSet;
@@ -94,7 +103,25 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                     context.startActivity(intent);
                 }
                 else if(dataSet.get(position).getOrderState() == Order.OrderState.ACCEPTED){
-
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    alertDialogBuilder.setMessage("Are you going to go for the hire?");
+                    alertDialogBuilder.setNegativeButton("No", null);
+                    alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            new AsyncTask<Void, Void, Void>(){
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    new Communicator().updateState(State.GOING_FOR_HIRE);
+                                    return null;
+                                }
+                            }.execute();
+                            Intent intent = new Intent(context, CurrentOrderActivity.class);
+                            intent.putExtra("order", dataSet.get(position));
+                            context.startActivity(intent);
+                        }
+                    });
+                    alertDialogBuilder.create().show();
                 }
             }
         });

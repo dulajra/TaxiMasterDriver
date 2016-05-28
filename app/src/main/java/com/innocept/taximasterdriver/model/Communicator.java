@@ -183,6 +183,11 @@ public class Communicator{
         return orderList;
     }
 
+    public boolean finishOrder(Order order) {
+
+        return false;
+    }
+
     public static boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) ApplicationContext.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

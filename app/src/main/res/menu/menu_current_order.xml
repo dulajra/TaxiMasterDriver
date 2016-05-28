@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.dulaj.test.MainActivity">
+
+    <item
+        android:id="@+id/action_update_state"
+        android:orderInCategory="100"
+        android:title="Update state as on order"
+        android:icon="@drawable/ic_action_refresh"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_update_stop"
+        android:orderInCategory="100"
+        android:title="Update state as on order"
+        android:icon="@drawable/ic_action_stop"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_call"
+        android:orderInCategory="100"
+        android:title="Call customer"
+        android:icon="@drawable/ic_action_call"
+        app:showAsAction="always" />
+
+</menu>

@@ -17,7 +17,7 @@ public class Order implements Serializable{
     private Date endTime;
     private String note;
     private String contact;
-    private String distance;
+    private double distance;
     private int fare;
 
     public int getFare() {
@@ -33,11 +33,11 @@ public class Order implements Serializable{
     public Order() {
     }
 
-    public String getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
