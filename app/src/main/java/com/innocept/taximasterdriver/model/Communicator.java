@@ -37,6 +37,7 @@ public class Communicator{
     private final String URL_LOGIN = URL_ROOT + "/driver/login";
     private final String URL_RESPOND_TO_NEW_ORDER = URL_ROOT + "/driver/order/respond";
     private final String URL_GET_ORDERS = URL_ROOT + "/driver/orders";
+    private final String URL_FINISH_ORDER = URL_ROOT + "/driver/order/finish";
 
     public Communicator() {
     }
@@ -184,7 +185,25 @@ public class Communicator{
     }
 
     public boolean finishOrder(Order order) {
+        ContentValues values = new ContentValues();
+        values.put("startTime", new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getTime()));
+        values.put("endTime", new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getEndTime()));
+        values.put("origin", order.getOrigin());
+        values.put("destination", order.getDestination());
+        values.put("distance", order.getDistance());
+        values.put("contact", order.getContact());
+        values.put("fare", order.getFare());
+        values.put("taxiDriverId", ApplicationPreferences.getDriver().getId());
+        String  response = HTTPHandler.sendGET(URL_FINISH_ORDER, values);
 
+        if (response != null) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                return jsonObject.getBoolean("success");
+            } catch (JSONException e) {
+                Log.e(DEBUG_TAG, e.toString());
+            }
+        }
         return false;
     }
 
