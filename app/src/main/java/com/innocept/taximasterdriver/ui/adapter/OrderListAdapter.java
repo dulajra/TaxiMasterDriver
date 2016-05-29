@@ -112,7 +112,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                             new AsyncTask<Void, Void, Void>(){
                                 @Override
                                 protected Void doInBackground(Void... params) {
-                                    new Communicator().updateState(State.GOING_FOR_HIRE);
+                                    new Communicator().updateState(State.GOING_FOR_HIRE, dataSet.get(position).getId());
                                     return null;
                                 }
                             }.execute();

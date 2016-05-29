@@ -126,7 +126,8 @@ public class Order implements Serializable{
         ACCEPTED(1),
         PENDING(2),
         FINISHED(3),
-        REJECTED(4);
+        REJECTED(4),
+        NOW(5);
 
         int value;
 

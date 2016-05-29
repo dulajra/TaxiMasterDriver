@@ -40,6 +40,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:onClick="openDriverStateActivity"
-        android:src="@drawable/ic_action_new" />
+        android:src="@drawable/ic_action_refresh" />
 
 </android.support.design.widget.CoordinatorLayout>

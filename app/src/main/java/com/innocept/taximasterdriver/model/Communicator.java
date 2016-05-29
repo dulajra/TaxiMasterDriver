@@ -69,6 +69,34 @@ public class Communicator{
         }
     }
 
+    public boolean updateState(State state, int orderId) {
+        ContentValues values = new ContentValues();
+        values.put("id", ApplicationPreferences.getDriver().getId());
+        values.put("stateId", state.getValue());
+        values.put("orderId", orderId);
+        String response = HTTPHandler.sendPOST(URL_UPDATE_STATE, values);
+
+        if (response != null) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean result = jsonObject.getBoolean("success");
+                if(result){
+                    ApplicationPreferences.setCurrentState(state);
+                    Log.i(DEBUG_TAG, "Driver state update success");
+                }
+                else{
+                    Log.i(DEBUG_TAG, "Driver state update failed");
+                }
+                return result;
+            } catch (JSONException e) {
+                Log.e(DEBUG_TAG, e.toString());
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     public boolean updateLocation(Location location) {
         ContentValues values = new ContentValues();
         values.put("id", ApplicationPreferences.getDriver().getId());
