@@ -5,10 +5,10 @@
     tools:context="com.dulaj.test.MainActivity">
 
     <item
-        android:id="@+id/action_update_state"
+        android:id="@+id/action_pick_customer"
         android:orderInCategory="100"
         android:title="Update state as on order"
-        android:icon="@drawable/ic_action_refresh"
+        android:icon="@drawable/ic_action_man"
         app:showAsAction="always" />
 
     <item
@@ -16,6 +16,13 @@
         android:orderInCategory="100"
         android:title="Update state as on order"
         android:icon="@drawable/ic_action_stop"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="100"
+        android:title="Update route"
+        android:icon="@drawable/ic_action_refresh"
         app:showAsAction="always" />
 
     <item

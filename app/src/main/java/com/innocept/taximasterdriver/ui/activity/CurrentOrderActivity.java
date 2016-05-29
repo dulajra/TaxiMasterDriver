@@ -54,7 +54,6 @@ import com.innocept.taximasterdriver.model.foundation.Order;
 import com.innocept.taximasterdriver.model.foundation.State;
 import com.innocept.taximasterdriver.presenter.CurrentOrderPresenter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -70,6 +69,13 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
 
     public LatLng mLastLocationLatLng;
     private GoogleApiClient mGoogleApiClient;
+
+    // Location updates intervals in sec
+    private static int UPDATE_INTERVAL = 0;
+    private static int FASTEST_INTERVAL = 0;
+
+    //Minimum distance between two location updates in meters.
+    private static int DISPLACEMENT = 0;
 
     private GoogleMap mMap;
     private UiSettings mapUiSettings;
@@ -179,7 +185,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
     }
 
     private void plotRoute(LatLng startLatLng, LatLng endLatLng, final int routeColor, final int polylineType) {
-        String serverKey = "AIzaSyC4j_LRXzLBu3_ANhztr0YV8dUevvgADJE";
+        String serverKey = "AIzaSyBV39bSkS5_GjTJcrN4Jd_lhEbz1DnOCNU";
         GoogleDirection.withServerKey(serverKey)
                 .from(startLatLng)
                 .to(endLatLng)
@@ -190,7 +196,6 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                     @Override
                     public void onDirectionSuccess(Direction direction, String rawBody) {
                         if (direction.getStatus().equals(RequestResult.OK)) {
-
                             Route route = direction.getRouteList().get(0);
                             Leg leg = route.getLegList().get(0);
                             ArrayList<LatLng> pointList = leg.getDirectionPoint();
@@ -198,33 +203,25 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                             polyLines[polylineType] = mMap.addPolyline(polylineOptions);
 
                         } else if (direction.getStatus().equals(RequestResult.NOT_FOUND)) {
-                            // Do something
+                            Toast.makeText(CurrentOrderActivity.this, "No route cannot be found.", Toast.LENGTH_LONG);
+                        }
+                        else{
+                            Toast.makeText(CurrentOrderActivity.this, "Error occurred. Contact developers if error continues.", Toast.LENGTH_LONG);
+                            Log.e(DEBUG_TAG, "Error in while getting directions: " + direction.getStatus());
                         }
                     }
 
                     @Override
                     public void onDirectionFailure(Throwable t) {
-                        // Do something here
+                        Log.e(DEBUG_TAG, "Error in while getting directions: " + t.toString());
                     }
                 });
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
-        }
-        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (lastLocation != null) {
-            mLastLocationLatLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-            if (polyLines[1] != null) {
-                polyLines[1].remove();
-            }
-            plotRoute(mLastLocationLatLng, startLatLng, Color.RED, 1);
-            moveAndAnimateCamera(mLastLocationLatLng, DEFAULT_ZOOM_LEVEL);
-        }
+        updateLastKnownLocation();
+        updateRoutes();
     }
 
     @Override
@@ -251,41 +248,49 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
             case R.id.action_call:
                 callCustomer();
                 break;
-            case R.id.action_update_state:
-                new AsyncTask<Void, Void, Void>() {
-
-                    boolean result;
-
+            case R.id.action_pick_customer:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Pick up the customer?");
+                builder.setNegativeButton("No", null);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    protected Void doInBackground(Void... params) {
-                        result = new Communicator().updateState(State.IN_HIRE);
-                        return null;
-                    }
+                    public void onClick(DialogInterface dialog, int which) {
+                        new AsyncTask<Void, Void, Void>() {
 
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        if(result){
-                            toolbar.setTitle("On hire");
-                            menu.findItem(R.id.action_update_state).setVisible(false);
-                            isUpdateVisible = false;
-                            isStopVisible = true;
-                            invalidateOptionsMenu();
-                            if(polyLines[0]!=null){
-                                polyLines[0].remove();
+                            boolean result;
+
+                            @Override
+                            protected Void doInBackground(Void... params) {
+                                result = new Communicator().updateState(State.IN_HIRE);
+                                return null;
                             }
-                            if(polyLines[1]!=null){
-                                polyLines[1].remove();
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+                                if(result){
+                                    toolbar.setTitle("On hire");
+                                    menu.findItem(R.id.action_pick_customer).setVisible(false);
+                                    isUpdateVisible = false;
+                                    isStopVisible = true;
+                                    invalidateOptionsMenu();
+                                    if(polyLines[0]!=null){
+                                        polyLines[0].remove();
+                                    }
+                                    if(polyLines[1]!=null){
+                                        polyLines[1].remove();
+                                    }
+                                    startMarker.remove();
+                                    updateRoutes();
+                                }
                             }
-                            startMarker.remove();
-                            plotRoute(mLastLocationLatLng, endLatLng, getResources().getColor(R.color.colorPrimary), 1);
-                        }
+                        }.execute();
                     }
-                }.execute();
+                });
+                builder.create().show();
                 break;
 
             case R.id.action_update_stop:
-
                 LayoutInflater inflater = LayoutInflater.from(this);
                 View alertDialogView = inflater.inflate(R.layout.inflater_alert_dialog_finish_order, null);
 
@@ -294,6 +299,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
 
                 final AlertDialog.Builder enterDetailsDialogBuilder = new AlertDialog.Builder(this);
                 enterDetailsDialogBuilder.setView(alertDialogView);
+                enterDetailsDialogBuilder.setCancelable(false);
                 enterDetailsDialogBuilder.setTitle("Order summary");
                 enterDetailsDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
@@ -341,10 +347,9 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
 
                     }
                 });
-                enterDetailsDialogBuilder.setNegativeButton("Cancel", null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setMessage("Do you want to finish the hire?");
+                alertDialogBuilder.setMessage("Finish the hire?");
                 alertDialogBuilder.setNegativeButton("No", null);
                 alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -367,6 +372,11 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                 });
                 alertDialogBuilder.create().show();
                 break;
+
+            case R.id.action_refresh:
+                Toast.makeText(CurrentOrderActivity.this, "Updating routes", Toast.LENGTH_SHORT).show();
+                updateRoutes();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -374,7 +384,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem updateMenu = menu.findItem(R.id.action_update_state);
+        MenuItem updateMenu = menu.findItem(R.id.action_pick_customer);
         MenuItem stopMenu = menu.findItem(R.id.action_update_stop);
         updateMenu.setVisible(isUpdateVisible);
         stopMenu.setVisible(isStopVisible);
@@ -399,4 +409,41 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
             callCustomer();
         }
     }
+
+    private void updateRoutes(){
+        if (polyLines[1] != null) {
+            polyLines[1].remove();
+        }
+        if (polyLines[0] != null) {
+            polyLines[0].remove();
+        }
+        if(isUpdateVisible){
+            updateLastKnownLocation();
+            if(mLastLocationLatLng!=null){
+                plotRoute(mLastLocationLatLng, startLatLng, Color.RED, 1);
+            }
+            plotRoute(startLatLng, endLatLng, getResources().getColor(R.color.colorPrimary), 0);
+            moveAndAnimateCamera(mLastLocationLatLng, DEFAULT_ZOOM_LEVEL);
+        }
+        else{
+            updateLastKnownLocation();
+            if(mLastLocationLatLng!=null){
+                plotRoute(mLastLocationLatLng, endLatLng, getResources().getColor(R.color.colorPrimary), 0);
+                moveAndAnimateCamera(mLastLocationLatLng, DEFAULT_ZOOM_LEVEL);
+            }
+        }
+    }
+
+    private void updateLastKnownLocation(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
+        }
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (lastLocation != null) {
+            mLastLocationLatLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+        }
+    }
+
 }
