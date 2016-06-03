@@ -79,20 +79,24 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         viewHolder.textFromTo.setText(dataSet.get(position).getOrigin() + " to " + dataSet.get(position).getDestination());
         viewHolder.textTime.setText(new SimpleDateFormat("yyyy-MM-dd HH-mm").format(dataSet.get(position).getTime()));
         viewHolder.textContact.setText(dataSet.get(position).getContact());
-        viewHolder.textNote.setText(dataSet.get(position).getNote());
+
+        if(dataSet.get(position).getNote()!=null && dataSet.get(position).getNote().length()>0){
+            viewHolder.textNote.setText(dataSet.get(position).getNote());
+        }
 
         Order.OrderState orderState = dataSet.get(position).getOrderState();
         if(orderState == Order.OrderState.PENDING){
             viewHolder.textState.setVisibility(View.VISIBLE);
             viewHolder.textState.setText(dataSet.get(position).getOrderState().toString());
             viewHolder.textState.setTextColor(Color.RED);
+            viewHolder.textState.setText(orderState.toString());
         }
         else if(orderState == Order.OrderState.ACCEPTED){
             viewHolder.textState.setVisibility(View.VISIBLE);
             viewHolder.textState.setText(dataSet.get(position).getOrderState().toString());
             viewHolder.textState.setTextColor(Color.GREEN);
+            viewHolder.textState.setText(orderState.toString());
         }
-        viewHolder.textState.setText(orderState.toString());
 
         viewHolder.linearLayoutOrderListItem.setOnClickListener(new View.OnClickListener() {
             @Override

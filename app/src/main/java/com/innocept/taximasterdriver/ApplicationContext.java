@@ -24,6 +24,8 @@ import java.text.SimpleDateFormat;
  */
 public class ApplicationContext extends Application{
 
+    private final String DEBUG_TAG = ApplicationContext.class.getSimpleName();
+
     private static Context context;
 
     @Override
@@ -74,14 +76,13 @@ public class ApplicationContext extends Application{
                        order.setDestinationCoordinates(new Location(Double.parseDouble(additionalData.getString("destinationLatitude")),Double.parseDouble(additionalData.getString("destinationLongitude"))));
                        order.setNote(additionalData.getString("note"));
                        order.setContact(additionalData.getString("contact"));
-                       order.setTime(new SimpleDateFormat("yyyy-MM-dd HH-mm").parse(additionalData.getString("time")));
-
+                       order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(additionalData.getString("time")));
                        intent.putExtra("order", order);
                        startActivity(intent);
                    }
                 }
             } catch (Throwable t) {
-                t.printStackTrace();
+                Log.e(DEBUG_TAG, t.toString());
             }
 
         }

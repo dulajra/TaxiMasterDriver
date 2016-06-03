@@ -89,7 +89,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
     private float DEFAULT_ZOOM_LEVEL = 11f;
 
     private Menu menu;
-    private boolean isUpdateVisible = true;
+    private boolean isPickedUpCustomer = false;
     private boolean isStopVisible = false;
 
     @Override
@@ -271,15 +271,9 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                                 if(result){
                                     toolbar.setTitle("On hire");
                                     menu.findItem(R.id.action_pick_customer).setVisible(false);
-                                    isUpdateVisible = false;
+                                    isPickedUpCustomer = true;
                                     isStopVisible = true;
                                     invalidateOptionsMenu();
-                                    if(polyLines[0]!=null){
-                                        polyLines[0].remove();
-                                    }
-                                    if(polyLines[1]!=null){
-                                        polyLines[1].remove();
-                                    }
                                     startMarker.remove();
                                     updateRoutes();
                                 }
@@ -386,7 +380,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem updateMenu = menu.findItem(R.id.action_pick_customer);
         MenuItem stopMenu = menu.findItem(R.id.action_update_stop);
-        updateMenu.setVisible(isUpdateVisible);
+        updateMenu.setVisible(!isPickedUpCustomer);
         stopMenu.setVisible(isStopVisible);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -417,7 +411,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         if (polyLines[0] != null) {
             polyLines[0].remove();
         }
-        if(isUpdateVisible){
+        if(!isPickedUpCustomer){
             updateLastKnownLocation();
             if(mLastLocationLatLng!=null){
                 plotRoute(mLastLocationLatLng, startLatLng, Color.RED, 1);

@@ -27,11 +27,11 @@ import java.util.List;
  * Created by Dulaj on 14-Apr-16.
  */
 
-public class Communicator{
+public class Communicator {
 
     private final String DEBUG_TAG = Communicator.class.getSimpleName();
 
-    private final String URL_ROOT = "http://b2177c9a.ngrok.io";
+    private final String URL_ROOT = "http://701fafba.ngrok.io";
     private final String URL_UPDATE_STATE = URL_ROOT + "/driver/update/state";
     private final String URL_UPDATE_LOCATION = URL_ROOT + "/driver/update/location";
     private final String URL_LOGIN = URL_ROOT + "/driver/login";
@@ -52,11 +52,10 @@ public class Communicator{
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 boolean result = jsonObject.getBoolean("success");
-                if(result){
+                if (result) {
                     ApplicationPreferences.setCurrentState(state);
                     Log.i(DEBUG_TAG, "Driver state update success");
-                }
-                else{
+                } else {
                     Log.i(DEBUG_TAG, "Driver state update failed");
                 }
                 return result;
@@ -80,11 +79,10 @@ public class Communicator{
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 boolean result = jsonObject.getBoolean("success");
-                if(result){
+                if (result) {
                     ApplicationPreferences.setCurrentState(state);
                     Log.i(DEBUG_TAG, "Driver state update success");
-                }
-                else{
+                } else {
                     Log.i(DEBUG_TAG, "Driver state update failed");
                 }
                 return result;
@@ -108,10 +106,9 @@ public class Communicator{
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 boolean result = jsonObject.getBoolean("success");
-                if(result){
+                if (result) {
                     Log.i(DEBUG_TAG, "Driver location update success");
-                }
-                else{
+                } else {
                     Log.i(DEBUG_TAG, "Driver location update failed");
                 }
                 return result;
@@ -137,7 +134,7 @@ public class Communicator{
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 int result = jsonObject.getInt("success");
-                switch (result){
+                switch (result) {
                     case 0:
                         driver = new Gson().fromJson(jsonObject.getJSONObject("driver").toString(), Driver.class);
                         ApplicationPreferences.saveDriver(driver);
@@ -160,15 +157,16 @@ public class Communicator{
         return resultCode;
     }
 
-    public boolean respondToNewOrder(int orderId, boolean isAccepted){
+    public boolean respondToNewOrder(int orderId, boolean isAccepted) {
         ContentValues values = new ContentValues();
         values.put("orderId", orderId);
         values.put("isAccepted", isAccepted);
-        String  response = HTTPHandler.sendPOST(URL_RESPOND_TO_NEW_ORDER, values);
+        String response = HTTPHandler.sendGET(URL_RESPOND_TO_NEW_ORDER, values);
 
         if (response != null) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
+                Log.i(DEBUG_TAG, jsonObject.toString() + " >>>>>>>>>>>>");
                 return jsonObject.getBoolean("success");
             } catch (JSONException e) {
                 Log.e(DEBUG_TAG, e.toString());
@@ -187,22 +185,26 @@ public class Communicator{
         try {
             JSONArray jsonArray = new JSONArray(response);
 
-            for(int i=0; i<jsonArray.length(); i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 Order order = new Order();
                 order.setId(jsonObject.getInt("id"));
                 order.setOrigin(jsonObject.getString("origin"));
-                order.setOriginCoordinates(new Location(jsonObject.getDouble("originLatitude"), jsonObject.getDouble("originLongitude")));
                 order.setDestination(jsonObject.getString("destination"));
-                order.setDestinationCoordinates(new Location(jsonObject.getDouble("destinationLatitude"), jsonObject.getDouble("destinationLongitude")));
                 try {
-                    order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(jsonObject.getString("time")));
+                    if (type == 0) {
+                        order.setOriginCoordinates(new Location(jsonObject.getDouble("originLatitude"), jsonObject.getDouble("originLongitude")));
+                        order.setDestinationCoordinates(new Location(jsonObject.getDouble("destinationLatitude"), jsonObject.getDouble("destinationLongitude")));
+                        order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(jsonObject.getString("time")));
+                        order.setOrderState(Order.OrderState.valueOf(jsonObject.getString("state")));
+                        order.setNote(jsonObject.getString("note"));
+                    } else if (type == 1) {
+                        order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(jsonObject.getString("startTime")));
+                    }
                 } catch (ParseException e) {
                     Log.e(DEBUG_TAG, "Error parsing date: " + e.toString());
                 }
                 order.setContact(jsonObject.getString("contact"));
-                order.setOrderState(Order.OrderState.valueOf(jsonObject.getString("state")));
-                order.setNote(jsonObject.getString("note"));
                 orderList.add(order);
             }
         } catch (JSONException e) {
@@ -222,7 +224,7 @@ public class Communicator{
         values.put("contact", order.getContact());
         values.put("fare", order.getFare());
         values.put("taxiDriverId", ApplicationPreferences.getDriver().getId());
-        String  response = HTTPHandler.sendGET(URL_FINISH_ORDER, values);
+        String response = HTTPHandler.sendGET(URL_FINISH_ORDER, values);
 
         if (response != null) {
             try {
