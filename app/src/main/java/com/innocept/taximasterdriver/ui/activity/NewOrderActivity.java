@@ -131,8 +131,14 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
         Toast.makeText(NewOrderActivity.this, getResources().getString(R.string.message_new_order_response_failed), Toast.LENGTH_SHORT).show();
     }
 
-    public void onSuccess() {
-        startActivity(new Intent(NewOrderActivity.this, OrderListActivity.class));
+    public void onSuccess(boolean isAccepted) {
+        if(isAccepted){
+            startActivity(new Intent(NewOrderActivity.this, OrderListActivity.class));
+        }
+        else{
+            startActivity(new Intent(NewOrderActivity.this, DriverStateActivity.class));
+        }
+        this.finish();
     }
 
     public void showSilenceDialog() {

@@ -1,5 +1,6 @@
 package com.innocept.taximasterdriver.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -109,6 +110,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                     intent.putExtra("order", dataSet.get(position));
                     intent.putExtra("isSilence", true);
                     context.startActivity(intent);
+                    ((Activity)context).finish();
                 }
                 else if(dataSet.get(position).getOrderState() == Order.OrderState.ACCEPTED){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -127,6 +129,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                             Intent intent = new Intent(context, CurrentOrderActivity.class);
                             intent.putExtra("order", dataSet.get(position));
                             context.startActivity(intent);
+                            ((Activity)context).finish();
                         }
                     });
                     alertDialogBuilder.create().show();

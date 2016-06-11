@@ -51,7 +51,7 @@ public class NewOrderPresenter {
                 super.onPostExecute(result);
                 view.closeProgressDialog();
                 if(response){
-                    view.onSuccess();
+                    view.onSuccess(isAccepted);
                 }
                 else{
                     view.onError();

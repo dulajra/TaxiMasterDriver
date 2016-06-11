@@ -177,6 +177,7 @@ public class DriverStateActivity extends AppCompatActivity {
 
     public void openOrderListActivity(View view) {
         startActivity(new Intent(DriverStateActivity.this, OrderListActivity.class));
+        this.finish();
     }
 
 }

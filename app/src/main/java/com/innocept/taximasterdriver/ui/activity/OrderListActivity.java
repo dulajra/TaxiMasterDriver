@@ -92,6 +92,7 @@ public class OrderListActivity extends AppCompatActivity {
 
     public void openDriverStateActivity(View view) {
         startActivity(new Intent(OrderListActivity.this, DriverStateActivity.class));
+        this.finish();
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
