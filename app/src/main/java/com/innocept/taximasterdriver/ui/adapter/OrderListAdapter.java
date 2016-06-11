@@ -83,6 +83,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         if(dataSet.get(position).getNote()!=null && dataSet.get(position).getNote().length()>0){
             viewHolder.textNote.setText(dataSet.get(position).getNote());
         }
+        else{
+            viewHolder.textNote.setVisibility(View.GONE);
+        }
 
         Order.OrderState orderState = dataSet.get(position).getOrderState();
         if(orderState == Order.OrderState.PENDING){
@@ -104,6 +107,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                 if(dataSet.get(position).getOrderState() == Order.OrderState.PENDING){
                     Intent intent = new Intent(context, NewOrderActivity.class);
                     intent.putExtra("order", dataSet.get(position));
+                    intent.putExtra("isSilence", true);
                     context.startActivity(intent);
                 }
                 else if(dataSet.get(position).getOrderState() == Order.OrderState.ACCEPTED){

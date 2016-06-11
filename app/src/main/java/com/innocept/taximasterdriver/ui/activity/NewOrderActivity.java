@@ -1,10 +1,14 @@
 package com.innocept.taximasterdriver.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -39,8 +43,10 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
     private TextView textViewNote;
 
     ProgressDialog progressDialog;
+    MediaPlayer player;
 
     private Order order;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,15 +70,32 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
         textViewContact = (TextView)findViewById(R.id.text_new_order_contact);
         textViewNote = (TextView)findViewById(R.id.text_new_order_note);
 
-        order = (Order)getIntent().getSerializableExtra("order");
+        intent = getIntent();
+        order = (Order)intent.getSerializableExtra("order");
         textViewFromTo.setText(order.getOrigin() + " to " + order.getDestination());
         textViewTime.setText(new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getTime()));
         textViewContact.setText(order.getContact());
         textViewNote.setText(order.getNote());
     }
 
+    public void playOrTopSound(boolean isPlay){
+        if(player==null){
+            player = MediaPlayer.create(this,
+                    Settings.System.DEFAULT_RINGTONE_URI);
+        }
+        if(isPlay){
+            player.start();
+        }else{
+            player.stop();
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        if(!intent.getBooleanExtra("isSilence", false) ){
+            playOrTopSound(true);
+            showSilenceDialog();
+        }
         mMap = googleMap;
 
         LatLng sydney = new LatLng(6.9124,79.8594);
@@ -104,5 +127,18 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
 
     public void onSuccess() {
         startActivity(new Intent(NewOrderActivity.this, OrderListActivity.class));
+    }
+
+    public void showSilenceDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewOrderActivity.this);
+        builder.setMessage("New hire received.");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Silence", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                playOrTopSound(false);
+            }
+        });
+        builder.create().show();
     }
 }

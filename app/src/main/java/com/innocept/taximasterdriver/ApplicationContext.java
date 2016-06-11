@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 /**
  * ApplicationContext is used to get the context of the application from any where.
  */
-public class ApplicationContext extends Application{
+public class ApplicationContext extends Application {
 
     private final String DEBUG_TAG = ApplicationContext.class.getSimpleName();
 
@@ -53,33 +53,34 @@ public class ApplicationContext extends Application{
         MultiDex.install(this);
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return context;
     }
 
-//    This fires when a notification is opened by tapping on it or one is received while the app is running.
+    //    This fires when a notification is opened by tapping on it or one is received while the app is running.
     private class NotificationHandler implements OneSignal.NotificationOpenedHandler {
 
         @Override
         public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
             try {
                 if (additionalData != null) {
-                   if(additionalData.getString("notificationType").equals("newOrder")){
-                       Intent intent = new Intent(context, NewOrderActivity.class);
-                       intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Log.i(DEBUG_TAG, additionalData.toString());
+                    if (additionalData.getString("notificationType").equals("newOrder")) {
+                        Intent intent = new Intent(context, NewOrderActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                       Order order = new Order();
-                       order.setId(additionalData.getInt("id"));
-                       order.setOrigin(additionalData.getString("origin"));
-                       order.setOriginCoordinates(new Location(Double.parseDouble(additionalData.getString("originLatitude")),Double.parseDouble(additionalData.getString("originLongitude"))));
-                       order.setDestination(additionalData.getString("destination"));
-                       order.setDestinationCoordinates(new Location(Double.parseDouble(additionalData.getString("destinationLatitude")),Double.parseDouble(additionalData.getString("destinationLongitude"))));
-                       order.setNote(additionalData.getString("note"));
-                       order.setContact(additionalData.getString("contact"));
-                       order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(additionalData.getString("time")));
-                       intent.putExtra("order", order);
-                       startActivity(intent);
-                   }
+                        Order order = new Order();
+                        order.setId(additionalData.getInt("id"));
+                        order.setOrigin(additionalData.getString("origin"));
+                        order.setOriginCoordinates(new Location(Double.parseDouble(additionalData.getString("originLatitude")), Double.parseDouble(additionalData.getString("originLongitude"))));
+                        order.setDestination(additionalData.getString("destination"));
+                        order.setDestinationCoordinates(new Location(Double.parseDouble(additionalData.getString("destinationLatitude")), Double.parseDouble(additionalData.getString("destinationLongitude"))));
+                        order.setNote(additionalData.getString("note"));
+                        order.setContact(additionalData.getString("contact"));
+                        order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(additionalData.getString("time")));
+                        intent.putExtra("order", order);
+                        startActivity(intent);
+                    }
                 }
             } catch (Throwable t) {
                 Log.e(DEBUG_TAG, t.toString());

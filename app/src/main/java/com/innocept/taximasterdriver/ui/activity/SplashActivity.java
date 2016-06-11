@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,17 +27,15 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_splash);
 
-//        Test splash
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(layoutParams);
-        textView.setTextSize(36);
-        textView.setTypeface(Typeface.DEFAULT_BOLD);
-        textView.setGravity(Gravity.CENTER);
-        textView.setText("Taxi Master");
-        setContentView(textView);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        ImageView imageView = new ImageView(SplashActivity.this);
+        imageView.setBackgroundResource(R.drawable.ic_splash);
+        imageView.setAdjustViewBounds(true);
+        setContentView(imageView);
 
         timer = new Timer();
 
@@ -53,7 +54,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
-        timer.schedule(timerTask, 10);
+        timer.schedule(timerTask, 1500);
     }
 }
 

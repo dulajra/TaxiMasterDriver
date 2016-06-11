@@ -31,7 +31,7 @@ public class Communicator {
 
     private final String DEBUG_TAG = Communicator.class.getSimpleName();
 
-    private final String URL_ROOT = "http://701fafba.ngrok.io";
+    private final String URL_ROOT = "http://bf72cbf6.ngrok.io";
     private final String URL_UPDATE_STATE = URL_ROOT + "/driver/update/state";
     private final String URL_UPDATE_LOCATION = URL_ROOT + "/driver/update/location";
     private final String URL_LOGIN = URL_ROOT + "/driver/login";
@@ -216,6 +216,7 @@ public class Communicator {
 
     public boolean finishOrder(Order order) {
         ContentValues values = new ContentValues();
+        values.put("id", order.getId());
         values.put("startTime", new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getTime()));
         values.put("endTime", new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getEndTime()));
         values.put("origin", order.getOrigin());
