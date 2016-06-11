@@ -61,6 +61,7 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Newly received order");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (newOrderPresenter == null) {
             newOrderPresenter = NewOrderPresenter.getInstance();

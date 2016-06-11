@@ -48,6 +48,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.innocept.taximasterdriver.ApplicationPreferences;
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.model.Communicator;
 import com.innocept.taximasterdriver.model.foundation.Order;
@@ -100,6 +101,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Going for hire");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (currentOrderPresenter == null) {
             currentOrderPresenter = CurrentOrderPresenter.getInstance();
@@ -156,10 +158,20 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
             }
         });
 
-        setStartMarker();
-        setEndMarker();
-        moveAndAnimateCamera(startLatLng, DEFAULT_ZOOM_LEVEL);
-        plotRoute(startLatLng, endLatLng, getResources().getColor(R.color.colorPrimary), 0);
+        if(State.valueOf(ApplicationPreferences.getCurrentState()) == State.IN_HIRE){
+            setEndMarker();
+            toolbar.setTitle("On hire");
+            isPickedUpCustomer = true;
+            isStopVisible = true;
+            invalidateOptionsMenu();
+            updateRoutes();
+        }
+        else{
+            setStartMarker();
+            setEndMarker();
+            moveAndAnimateCamera(startLatLng, DEFAULT_ZOOM_LEVEL);
+            plotRoute(startLatLng, endLatLng, getResources().getColor(R.color.colorPrimary), 0);
+        }
     }
 
     private Marker setMarker(LatLng latLng, String title) {
@@ -176,12 +188,6 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
 
     private void moveAndAnimateCamera(LatLng latLng, float zoom) {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-    }
-
-    private void resetMap() {
-        mMap.addMarker(new MarkerOptions().position(startLatLng).title(order.getOrigin()));
-        mMap.addMarker(new MarkerOptions().position(endLatLng).title(order.getDestination()));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, 10f));
     }
 
     private void plotRoute(LatLng startLatLng, LatLng endLatLng, final int routeColor, final int polylineType) {
@@ -245,14 +251,17 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case android.R.id.home:
+                goBack();
+                break;
             case R.id.action_call:
                 callCustomer();
                 break;
             case R.id.action_pick_customer:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Pick up the customer?");
-                builder.setNegativeButton("No", null);
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setMessage("Pick up the customer?");
+                alertBuilder.setNegativeButton("No", null);
+                alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         new AsyncTask<Void, Void, Void>() {
@@ -281,7 +290,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                         }.execute();
                     }
                 });
-                builder.create().show();
+                alertBuilder.create().show();
                 break;
 
             case R.id.action_update_stop:
@@ -373,7 +382,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                 break;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
@@ -440,4 +449,21 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        goBack();
+    }
+
+    private void goBack() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CurrentOrderActivity.this);
+        builder.setMessage("Do you want to go back?\nResume is possible.");
+        builder.setNegativeButton("No", null);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.create().show();
+    }
 }

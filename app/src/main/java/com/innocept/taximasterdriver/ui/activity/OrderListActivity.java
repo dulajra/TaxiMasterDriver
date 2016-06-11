@@ -2,6 +2,7 @@ package com.innocept.taximasterdriver.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.presenter.OrderListPresenter;
@@ -41,6 +43,7 @@ public class OrderListActivity extends AppCompatActivity {
     public FinishedOrderFragment finishedOrderFragment;
 
     boolean isTouchable = true;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,5 +142,25 @@ public class OrderListActivity extends AppCompatActivity {
             return super.dispatchTouchEvent(ev);
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            finish();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Press BACK again to exit", Toast.LENGTH_SHORT)
+                .show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }
