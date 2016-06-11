@@ -1,13 +1,17 @@
 package com.innocept.taximasterdriver.ui.fragment;
 
+import android.app.TabActivity;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
 
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.model.foundation.Order;
@@ -54,6 +58,11 @@ public class OnGoingOrderFragment extends Fragment {
         adapter = new OrderListAdapter(getActivity(), dataSet);
         recyclerView.setAdapter(adapter);
         ((OrderListActivity) getActivity()).submit();
+
+        if(getActivity().getIntent().getBooleanExtra("finish", false)){
+            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+            viewPager.setCurrentItem(1);
+        }
         return rootView;
     }
 

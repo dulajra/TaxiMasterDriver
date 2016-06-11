@@ -477,7 +477,9 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                 super.onPostExecute(aVoid);
                 progressDialog.dismiss();
                 if (response) {
-                    startActivity(new Intent(CurrentOrderActivity.this, OrderListActivity.class));
+                    Intent intent = new Intent(CurrentOrderActivity.this, OrderListActivity.class);
+                    intent.putExtra("finish", true);
+                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(CurrentOrderActivity.this, "Something went wrong. Please try again", Toast.LENGTH_LONG).show();

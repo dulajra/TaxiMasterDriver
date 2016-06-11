@@ -77,7 +77,6 @@ public class OrderListActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-
     }
 
     public void submit() {

@@ -13,6 +13,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:maxLines="1"
             android:id="@+id/text_order_list_from_to"
             style="@style/TaxiListItem"
             android:text="Colombo to Moratuwa"
