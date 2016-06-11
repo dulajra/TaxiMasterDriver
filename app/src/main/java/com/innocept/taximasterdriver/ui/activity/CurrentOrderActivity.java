@@ -175,7 +175,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
     }
 
     private void moveAndAnimateCamera(LatLng latLng, float zoom) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, zoom));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     private void resetMap() {

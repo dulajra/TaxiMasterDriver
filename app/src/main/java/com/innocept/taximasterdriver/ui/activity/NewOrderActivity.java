@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +20,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.innocept.taximasterdriver.R;
 import com.innocept.taximasterdriver.model.foundation.Order;
@@ -31,6 +34,8 @@ import java.text.SimpleDateFormat;
  * Created by dulaj on 5/25/16.
  */
 public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private float DEFAULT_ZOOM_LEVEL = 11f;
 
     NewOrderPresenter newOrderPresenter;
 
@@ -53,71 +58,72 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_order);
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Newly received order");
         setSupportActionBar(toolbar);
 
         if (newOrderPresenter == null) {
-            newOrderPresenter  = NewOrderPresenter.getInstance();
+            newOrderPresenter = NewOrderPresenter.getInstance();
         }
         newOrderPresenter.setView(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        textViewFromTo = (TextView)findViewById(R.id.text_new_order_from_to);
-        textViewTime = (TextView)findViewById(R.id.text_new_order_time);
-        textViewContact = (TextView)findViewById(R.id.text_new_order_contact);
-        textViewNote = (TextView)findViewById(R.id.text_new_order_note);
+        textViewFromTo = (TextView) findViewById(R.id.text_new_order_from_to);
+        textViewTime = (TextView) findViewById(R.id.text_new_order_time);
+        textViewContact = (TextView) findViewById(R.id.text_new_order_contact);
+        textViewNote = (TextView) findViewById(R.id.text_new_order_note);
 
         intent = getIntent();
-        order = (Order)intent.getSerializableExtra("order");
+        order = (Order) intent.getSerializableExtra("order");
         textViewFromTo.setText(order.getOrigin() + " to " + order.getDestination());
         textViewTime.setText(new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getTime()));
         textViewContact.setText(order.getContact());
         textViewNote.setText(order.getNote());
     }
 
-    public void playOrTopSound(boolean isPlay){
-        if(player==null){
+    public void playOrTopSound(boolean isPlay) {
+        if (player == null) {
             player = MediaPlayer.create(this,
                     Settings.System.DEFAULT_RINGTONE_URI);
+            player.setLooping(true);
         }
-        if(isPlay){
+        if (isPlay) {
             player.start();
-        }else{
+        } else {
             player.stop();
         }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if(!intent.getBooleanExtra("isSilence", false) ){
+        mMap = googleMap;
+        mMap.addMarker(new MarkerOptions().position(new LatLng(order.getOriginCoordinates().getLatitude(), order.getOriginCoordinates().getLongitude())).title(order.getOrigin()).snippet("Start").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(order.getDestinationCoordinates().getLatitude(), order.getDestinationCoordinates().getLongitude())).title(order.getDestination()).snippet("Destination").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(order.getOriginCoordinates().getLatitude(), order.getOriginCoordinates().getLongitude()), DEFAULT_ZOOM_LEVEL));
+
+        if (!intent.getBooleanExtra("isSilence", false)) {
             playOrTopSound(true);
             showSilenceDialog();
         }
-        mMap = googleMap;
-
-        LatLng sydney = new LatLng(6.9124,79.8594);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Colombo"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    public void onAcceptPressed(View view){
+    public void onAcceptPressed(View view) {
         newOrderPresenter.respondToNewOrder(order.getId(), true);
     }
 
-    public void onRejectPressed(View view){
+    public void onRejectPressed(View view) {
         newOrderPresenter.respondToNewOrder(order.getId(), false);
     }
 
-    public void showProgressDialog(String message){
+    public void showProgressDialog(String message) {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(message);
         progressDialog.show();
     }
 
-    public void closeProgressDialog(){
+    public void closeProgressDialog() {
         progressDialog.dismiss();
     }
 
@@ -129,7 +135,7 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
         startActivity(new Intent(NewOrderActivity.this, OrderListActivity.class));
     }
 
-    public void showSilenceDialog(){
+    public void showSilenceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(NewOrderActivity.this);
         builder.setMessage("New hire received.");
         builder.setCancelable(false);
