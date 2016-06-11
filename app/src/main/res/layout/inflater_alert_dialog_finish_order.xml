@@ -1,20 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:id="@+id/coordinator_parent">
 
-    <EditText
-        android:id="@+id/edit_distance"
-        style="@style/FinishOrderDialogViewItem"
-        android:hint="Enter distance in Km"
-        android:inputType="numberDecimal"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/edit_fare"
-        style="@style/FinishOrderDialogViewItem"
-        android:hint="Enter fare in rupees"
-        android:inputType="number"/>
+            <EditText
+                android:inputType="numberDecimal"
+                android:id="@+id/edit_distance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:hint="Enter distance in Km" />
 
-</LinearLayout>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_fare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:singleLine="true"
+                android:id="@+id/edit_fare"
+                android:hint="Enter fare in rupees"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

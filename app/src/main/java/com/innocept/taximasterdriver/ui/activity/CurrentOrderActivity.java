@@ -2,6 +2,7 @@ package com.innocept.taximasterdriver.ui.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,15 +13,21 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -93,6 +100,19 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
     private boolean isPickedUpCustomer = false;
     private boolean isStopVisible = false;
 
+    private TextInputLayout inputLayoutDistance;
+    private TextInputLayout inputLayoutFare;
+    private EditText editTextDistance;
+    private EditText editTexFare;
+    private AlertDialog finishedOrderAlertDialog;
+
+    public CurrentOrderActivity() {
+        inputLayoutDistance = null;
+        inputLayoutFare = null;
+        editTextDistance = null;
+        editTexFare = null;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,15 +178,14 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
             }
         });
 
-        if(State.valueOf(ApplicationPreferences.getCurrentState()) == State.IN_HIRE){
+        if (State.valueOf(ApplicationPreferences.getCurrentState()) == State.IN_HIRE) {
             setEndMarker();
             toolbar.setTitle("On hire");
             isPickedUpCustomer = true;
             isStopVisible = true;
             invalidateOptionsMenu();
             updateRoutes();
-        }
-        else{
+        } else {
             setStartMarker();
             setEndMarker();
             moveAndAnimateCamera(startLatLng, DEFAULT_ZOOM_LEVEL);
@@ -210,8 +229,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
 
                         } else if (direction.getStatus().equals(RequestResult.NOT_FOUND)) {
                             Toast.makeText(CurrentOrderActivity.this, "No route cannot be found.", Toast.LENGTH_LONG);
-                        }
-                        else{
+                        } else {
                             Toast.makeText(CurrentOrderActivity.this, "Error occurred. Contact developers if error continues.", Toast.LENGTH_LONG);
                             Log.e(DEBUG_TAG, "Error in while getting directions: " + direction.getStatus());
                         }
@@ -258,7 +276,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                 callCustomer();
                 break;
             case R.id.action_pick_customer:
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
                 alertBuilder.setMessage("Pick up the customer?");
                 alertBuilder.setNegativeButton("No", null);
                 alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -277,7 +295,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                             @Override
                             protected void onPostExecute(Void aVoid) {
                                 super.onPostExecute(aVoid);
-                                if(result){
+                                if (result) {
                                     toolbar.setTitle("On hire");
                                     menu.findItem(R.id.action_pick_customer).setVisible(false);
                                     isPickedUpCustomer = true;
@@ -297,57 +315,31 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                 LayoutInflater inflater = LayoutInflater.from(this);
                 View alertDialogView = inflater.inflate(R.layout.inflater_alert_dialog_finish_order, null);
 
-                final EditText editTextDistance = (EditText) alertDialogView.findViewById(R.id.edit_distance);
-                final EditText editTexFare = (EditText) alertDialogView.findViewById(R.id.edit_fare);
+                inputLayoutDistance = (TextInputLayout) alertDialogView.findViewById(R.id.input_layout_distance);
+                inputLayoutFare = (TextInputLayout) alertDialogView.findViewById(R.id.input_layout_fare);
+                editTextDistance = (EditText) alertDialogView.findViewById(R.id.edit_distance);
+                editTexFare = (EditText) alertDialogView.findViewById(R.id.edit_fare);
 
                 final AlertDialog.Builder enterDetailsDialogBuilder = new AlertDialog.Builder(this);
                 enterDetailsDialogBuilder.setView(alertDialogView);
                 enterDetailsDialogBuilder.setCancelable(false);
                 enterDetailsDialogBuilder.setTitle("Order summary");
-                enterDetailsDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                enterDetailsDialogBuilder.setPositiveButton("Ok", null);
+                finishedOrderAlertDialog = enterDetailsDialogBuilder.create();
+                finishedOrderAlertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        double distance = Double.parseDouble(editTextDistance.getText().toString());
-                        int fare = Integer.parseInt(editTexFare.getText().toString());
-
-                        order.setDistance(distance);
-                        order.setFare(fare);
-                        order.setEndTime(Calendar.getInstance().getTime());
-
-                        new AsyncTask<Void, Void, Void>(){
-
-                            ProgressDialog progressDialog;
-                            boolean response;
-
+                    public void onShow(DialogInterface dialog) {
+                        Log.i("Test", "Executed >>>>>>>>>> 1");
+                        Button positiveButton = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                        positiveButton.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            protected void onPreExecute() {
-                                super.onPreExecute();
-                                progressDialog = new ProgressDialog(CurrentOrderActivity.this);
-                                progressDialog.setMessage("Finishing hire...");
-                                progressDialog.show();
-                            }
-
-                            @Override
-                            protected Void doInBackground(Void... params) {
-                                response = new Communicator().finishOrder(order);
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
-                                progressDialog.dismiss();
-                                if(response){
-                                    startActivity(new Intent(CurrentOrderActivity.this, OrderListActivity.class));
-                                    finish();
-                                }
-                                else{
-                                    Toast.makeText(CurrentOrderActivity.this, "Something went wrong. Please try again", Toast.LENGTH_LONG).show();
+                            public void onClick(View v) {
+                                if(submitForm()){
+                                    finishOrder();
+                                    finishedOrderAlertDialog.dismiss();
                                 }
                             }
-
-                        }.execute();
-
+                        });
                     }
                 });
 
@@ -357,7 +349,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                 alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new AsyncTask<Void, Void, Void>(){
+                        new AsyncTask<Void, Void, Void>() {
                             @Override
                             protected Void doInBackground(Void... params) {
                                 new Communicator().updateState(State.AVAILABLE);
@@ -367,7 +359,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                             @Override
                             protected void onPostExecute(Void aVoid) {
                                 super.onPostExecute(aVoid);
-                                enterDetailsDialogBuilder.create().show();
+                                finishedOrderAlertDialog.show();
                             }
                         }.execute();
 
@@ -385,6 +377,116 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         return true;
     }
 
+    private boolean submitForm() {
+        if (!validateDistance()) {
+            return false;
+        }
+
+        if (!validateFare()) {
+            return false;
+        }
+
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(editTexFare.getWindowToken(), 0);
+        return true;
+    }
+
+    private boolean validateDistance() {
+        if (editTextDistance.getText().toString().trim().isEmpty()) {
+            inputLayoutDistance.setError(getString(R.string.err_msg_distance));
+            requestFocus(editTextDistance);
+            return false;
+        } else {
+            inputLayoutDistance.setErrorEnabled(false);
+        }
+
+        return true;
+    }
+
+    private boolean validateFare() {
+        if (editTexFare.getText().toString().trim().isEmpty()) {
+            inputLayoutFare.setError(getString(R.string.err_msg_fare));
+            requestFocus(editTexFare);
+            return false;
+        } else {
+            inputLayoutFare.setErrorEnabled(false);
+        }
+
+        return true;
+    }
+
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    private class MyTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.edit_distance:
+                    validateDistance();
+                    break;
+                case R.id.edit_fare:
+                    validateFare();
+                    break;
+            }
+        }
+    }
+
+    public void finishOrder() {
+        new AsyncTask<Void, Void, Void>() {
+
+            ProgressDialog progressDialog;
+            boolean response;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialog = new ProgressDialog(CurrentOrderActivity.this);
+                progressDialog.setMessage("Finishing hire...");
+                progressDialog.show();
+                double distance = Double.parseDouble(editTextDistance.getText().toString());
+                int fare = Integer.parseInt(editTexFare.getText().toString());
+
+                order.setDistance(distance);
+                order.setFare(fare);
+                order.setEndTime(Calendar.getInstance().getTime());
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                response = new Communicator().finishOrder(order);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                progressDialog.dismiss();
+                if (response) {
+                    startActivity(new Intent(CurrentOrderActivity.this, OrderListActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(CurrentOrderActivity.this, "Something went wrong. Please try again", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }.execute();
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem updateMenu = menu.findItem(R.id.action_pick_customer);
@@ -394,12 +496,11 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private void callCustomer(){
+    private void callCustomer() {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + order.getContact()));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 100);
-        }
-        else{
+        } else {
             startActivity(intent);
         }
     }
@@ -413,31 +514,30 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         }
     }
 
-    private void updateRoutes(){
+    private void updateRoutes() {
         if (polyLines[1] != null) {
             polyLines[1].remove();
         }
         if (polyLines[0] != null) {
             polyLines[0].remove();
         }
-        if(!isPickedUpCustomer){
+        if (!isPickedUpCustomer) {
             updateLastKnownLocation();
-            if(mLastLocationLatLng!=null){
+            if (mLastLocationLatLng != null) {
                 plotRoute(mLastLocationLatLng, startLatLng, Color.RED, 1);
             }
             plotRoute(startLatLng, endLatLng, getResources().getColor(R.color.colorPrimary), 0);
             moveAndAnimateCamera(mLastLocationLatLng, DEFAULT_ZOOM_LEVEL);
-        }
-        else{
+        } else {
             updateLastKnownLocation();
-            if(mLastLocationLatLng!=null){
+            if (mLastLocationLatLng != null) {
                 plotRoute(mLastLocationLatLng, endLatLng, getResources().getColor(R.color.colorPrimary), 0);
                 moveAndAnimateCamera(mLastLocationLatLng, DEFAULT_ZOOM_LEVEL);
             }
         }
     }
 
-    private void updateLastKnownLocation(){
+    private void updateLastKnownLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 101);

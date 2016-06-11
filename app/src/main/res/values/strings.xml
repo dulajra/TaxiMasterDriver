@@ -11,4 +11,7 @@
 
     <string name="err_msg_username">Username cannot be empty</string>
     <string name="err_msg_password">Password cannot be empty</string>
+
+    <string name="err_msg_distance">Distance cannot be empty</string>
+    <string name="err_msg_fare">Fare cannot be empty</string>
 </resources>
