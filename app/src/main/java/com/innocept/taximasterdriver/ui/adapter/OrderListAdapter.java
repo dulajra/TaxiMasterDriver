@@ -142,7 +142,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         });
     }
 
-    // Return the size of your data set (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return dataSet.size();
