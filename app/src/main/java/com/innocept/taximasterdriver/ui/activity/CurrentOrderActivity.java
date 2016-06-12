@@ -562,6 +562,7 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(CurrentOrderActivity.this, OrderListActivity.class));
                 finish();
             }
         });

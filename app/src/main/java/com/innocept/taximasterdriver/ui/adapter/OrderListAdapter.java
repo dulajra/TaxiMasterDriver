@@ -110,6 +110,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                     intent.putExtra("order", dataSet.get(position));
                     intent.putExtra("isSilence", true);
                     context.startActivity(intent);
+                    ((Activity)context).finish();
                 } else if (dataSet.get(position).getOrderState() == Order.OrderState.ACCEPTED) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                     alertDialogBuilder.setMessage("Are you going to go for the hire?");
@@ -127,6 +128,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                             Intent intent = new Intent(context, CurrentOrderActivity.class);
                             intent.putExtra("order", dataSet.get(position));
                             context.startActivity(intent);
+                            ((Activity)context).finish();
                         }
                     });
                     alertDialogBuilder.create().show();
@@ -134,6 +136,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                     Intent intent = new Intent(context, CurrentOrderActivity.class);
                     intent.putExtra("order", dataSet.get(position));
                     context.startActivity(intent);
+                    ((Activity)context).finish();
                 }
             }
         });
