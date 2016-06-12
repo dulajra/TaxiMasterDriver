@@ -329,7 +329,6 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                 finishedOrderAlertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialog) {
-                        Log.i("Test", "Executed >>>>>>>>>> 1");
                         Button positiveButton = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
                         positiveButton.setOnClickListener(new View.OnClickListener() {
                             @Override

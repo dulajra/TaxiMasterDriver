@@ -79,7 +79,7 @@ public class NewOrderActivity extends AppCompatActivity implements OnMapReadyCal
         intent = getIntent();
         order = (Order) intent.getSerializableExtra("order");
         textViewFromTo.setText(order.getOrigin() + " to " + order.getDestination());
-        textViewTime.setText(new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getTime()));
+        textViewTime.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(order.getTime()));
         textViewContact.setText(order.getContact());
         textViewNote.setText(order.getNote());
     }

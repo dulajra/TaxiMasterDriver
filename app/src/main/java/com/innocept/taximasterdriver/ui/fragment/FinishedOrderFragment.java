@@ -2,6 +2,7 @@ package com.innocept.taximasterdriver.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,6 +54,12 @@ public class FinishedOrderFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new OrderListAdapter(getActivity(), dataSet);
         recyclerView.setAdapter(adapter);
+
+        if(getActivity().getIntent().getBooleanExtra("finish", false)){
+            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+            viewPager.setCurrentItem(1);
+        }
+
         return rootView;
     }
 

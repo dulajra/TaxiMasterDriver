@@ -31,7 +31,7 @@ public class Communicator {
 
     private final String DEBUG_TAG = Communicator.class.getSimpleName();
 
-    private final String URL_ROOT = "http://bf72cbf6.ngrok.io";
+    private final String URL_ROOT = "http://7b957e6a.ngrok.io";
     private final String URL_UPDATE_STATE = URL_ROOT + "/driver/update/state";
     private final String URL_UPDATE_LOCATION = URL_ROOT + "/driver/update/location";
     private final String URL_LOGIN = URL_ROOT + "/driver/login";
@@ -195,11 +195,11 @@ public class Communicator {
                     if (type == 0) {
                         order.setOriginCoordinates(new Location(jsonObject.getDouble("originLatitude"), jsonObject.getDouble("originLongitude")));
                         order.setDestinationCoordinates(new Location(jsonObject.getDouble("destinationLatitude"), jsonObject.getDouble("destinationLongitude")));
-                        order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(jsonObject.getString("time")));
+                        order.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jsonObject.getString("time")));
                         order.setOrderState(Order.OrderState.valueOf(jsonObject.getString("state")));
                         order.setNote(jsonObject.getString("note"));
                     } else if (type == 1) {
-                        order.setTime(new SimpleDateFormat("yyyy-MM-dd hh:mm").parse(jsonObject.getString("startTime")));
+                        order.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jsonObject.getString("startTime")));
                     }
                 } catch (ParseException e) {
                     Log.e(DEBUG_TAG, "Error parsing date: " + e.toString());
@@ -217,8 +217,8 @@ public class Communicator {
     public boolean finishOrder(Order order) {
         ContentValues values = new ContentValues();
         values.put("id", order.getId());
-        values.put("startTime", new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getTime()));
-        values.put("endTime", new SimpleDateFormat("yyyy-MM-dd hh:mm").format(order.getEndTime()));
+        values.put("startTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(order.getTime()));
+        values.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(order.getEndTime()));
         values.put("origin", order.getOrigin());
         values.put("destination", order.getDestination());
         values.put("distance", order.getDistance());

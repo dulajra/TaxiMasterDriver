@@ -58,11 +58,6 @@ public class OnGoingOrderFragment extends Fragment {
         adapter = new OrderListAdapter(getActivity(), dataSet);
         recyclerView.setAdapter(adapter);
         ((OrderListActivity) getActivity()).submit();
-
-        if(getActivity().getIntent().getBooleanExtra("finish", false)){
-            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
-            viewPager.setCurrentItem(1);
-        }
         return rootView;
     }
 
