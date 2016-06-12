@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,7 @@ public class OnGoingOrderFragment extends Fragment {
 
     private final String DEBUG_TAG = OnGoingOrderFragment.class.getSimpleName();
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -51,13 +54,23 @@ public class OnGoingOrderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_order_list, container, false);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressbar_order_list);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeRefreshLayout);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_order_list);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new OrderListAdapter(getActivity(), dataSet);
         recyclerView.setAdapter(adapter);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ((OrderListActivity) getActivity()).submit();
+            }
+        });
+
         ((OrderListActivity) getActivity()).submit();
+        progressBar.setVisibility(View.VISIBLE);
         return rootView;
     }
 
@@ -77,7 +90,8 @@ public class OnGoingOrderFragment extends Fragment {
 
     public void lockUI() {
         clearViews();
-        progressBar.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(true);
+//        progressBar.setVisibility(View.VISIBLE);
     }
 
     public void clearViews() {
@@ -86,6 +100,7 @@ public class OnGoingOrderFragment extends Fragment {
     }
 
     public void releaseUI() {
+        swipeRefreshLayout.setRefreshing(false);
         progressBar.setVisibility(View.GONE);
     }
 
