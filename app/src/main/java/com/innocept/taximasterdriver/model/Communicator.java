@@ -61,11 +61,11 @@ public class Communicator {
                 return result;
             } catch (JSONException e) {
                 Log.e(DEBUG_TAG, e.toString());
-                return false;
+            } catch (NullPointerException e) {
+                Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean updateState(State state, int orderId) {
@@ -88,11 +88,11 @@ public class Communicator {
                 return result;
             } catch (JSONException e) {
                 Log.e(DEBUG_TAG, e.toString());
-                return false;
+            } catch (NullPointerException e) {
+                Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     public boolean updateLocation(Location location) {
@@ -114,11 +114,11 @@ public class Communicator {
                 return result;
             } catch (JSONException e) {
                 Log.e(DEBUG_TAG, e.toString());
-                return false;
+            } catch (NullPointerException e) {
+                Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     public int login(String username, String password) {
@@ -152,6 +152,8 @@ public class Communicator {
                 }
             } catch (JSONException e) {
                 Log.e(DEBUG_TAG, e.toString());
+            } catch (NullPointerException e) {
+                Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
             }
         }
         return resultCode;
@@ -166,10 +168,11 @@ public class Communicator {
         if (response != null) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
-                Log.i(DEBUG_TAG, jsonObject.toString() + " >>>>>>>>>>>>");
                 return jsonObject.getBoolean("success");
             } catch (JSONException e) {
                 Log.e(DEBUG_TAG, e.toString());
+            } catch (NullPointerException e) {
+                Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
             }
         }
         return false;
@@ -209,8 +212,9 @@ public class Communicator {
             }
         } catch (JSONException e) {
             Log.e(DEBUG_TAG, "Error converting to json array " + e.toString());
+        } catch (NullPointerException e) {
+            Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
         }
-
         return orderList;
     }
 
@@ -227,14 +231,15 @@ public class Communicator {
         values.put("taxiDriverId", ApplicationPreferences.getDriver().getId());
         String response = HTTPHandler.sendGET(URL_FINISH_ORDER, values);
 
-        if (response != null) {
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                return jsonObject.getBoolean("success");
-            } catch (JSONException e) {
-                Log.e(DEBUG_TAG, e.toString());
-            }
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            return jsonObject.getBoolean("success");
+        } catch (JSONException e) {
+            Log.e(DEBUG_TAG, e.toString());
+        } catch (NullPointerException e) {
+            Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
         }
+
         return false;
     }
 

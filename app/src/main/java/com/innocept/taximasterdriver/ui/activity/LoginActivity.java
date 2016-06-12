@@ -159,7 +159,6 @@ public class LoginActivity extends AppCompatActivity {
         this.finish();
     }
 
-
     public void onSignInFailed(String error){
         progressBar.setVisibility(View.GONE);
         Snackbar.make(coordinatorLayoutParent, error, Snackbar.LENGTH_LONG).show();
