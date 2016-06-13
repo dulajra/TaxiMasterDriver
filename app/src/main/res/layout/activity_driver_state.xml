@@ -41,7 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="stateChangePressed"
-            android:text="Going for hire" />
+            android:text="Going for hire"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_state_in_hire"
@@ -49,7 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="stateChangePressed"
-            android:text="In hire" />
+            android:text="In hire"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_state_not_in_service"

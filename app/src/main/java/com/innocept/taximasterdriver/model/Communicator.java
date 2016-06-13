@@ -145,10 +145,6 @@ public class Communicator {
                         resultCode = 1;
                         Log.i(DEBUG_TAG, "Username or password is incorrect");
                         break;
-                    case 2:
-                        resultCode = 2;
-                        Log.i(DEBUG_TAG, "Username not exists");
-                        break;
                 }
             } catch (JSONException e) {
                 Log.e(DEBUG_TAG, e.toString());
