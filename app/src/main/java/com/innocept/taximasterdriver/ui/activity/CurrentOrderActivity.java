@@ -118,6 +118,10 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_order);
 
+        if (ApplicationPreferences.getKeepScreenOn()) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Going for hire");
         setSupportActionBar(toolbar);

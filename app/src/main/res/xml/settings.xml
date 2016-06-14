@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="PROFILE">
+
+        <Preference
+            android:key="fullName"
+            android:title="Full Name" />
+
+        <Preference
+            android:key="phone"
+            android:title="Phone" />
+
+        <Preference
+            android:key="password"
+            android:title="Password"
+            android:summary="********"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="GENERAL">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="keepScreenOn"
+            android:summary="Don't turn off the while navigating"
+            android:title="Keep Awake"></CheckBoxPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="ABOUT">
+
+        <Preference
+            android:key="about"
+            android:summary="INNOCEPT Technologies"
+            android:title="Powered by" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -47,18 +47,23 @@
 
         <activity
             android:name=".ui.activity.NewOrderActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ui.activity.OrderListActivity"/>
+            android:parentActivityName=".ui.activity.OrderListActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.OrderListActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ui.activity.DriverStateActivity"/>
+            android:parentActivityName=".ui.activity.DriverStateActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.activity.CurrentOrderActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".ui.activity.OrderListActivity"/>
+            android:parentActivityName=".ui.activity.OrderListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activity.PreferenceActvity"
+            android:parentActivityName=".ui.activity.DriverStateActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

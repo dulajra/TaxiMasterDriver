@@ -49,6 +49,11 @@ public class ApplicationPreferences {
         return sharedPreferences.getString("state", State.NOT_IN_SERVICE.toString());
     }
 
+    public static boolean getKeepScreenOn(){
+        init();
+        return sharedPreferences.getBoolean("keepScreenOn", false);
+    }
+
 //    All setters go here
 
     public static void saveDriver(Driver driver){

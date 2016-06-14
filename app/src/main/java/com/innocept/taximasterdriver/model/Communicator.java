@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by Dulaj on 14-Apr-16.
@@ -31,10 +32,12 @@ public class Communicator {
 
     private final String DEBUG_TAG = Communicator.class.getSimpleName();
 
-    private final String URL_ROOT = "http://7b957e6a.ngrok.io";
+    private final String URL_ROOT = "http://taximaster.herokuapp.com";
     private final String URL_UPDATE_STATE = URL_ROOT + "/driver/update/state";
     private final String URL_UPDATE_LOCATION = URL_ROOT + "/driver/update/location";
     private final String URL_LOGIN = URL_ROOT + "/driver/login";
+    private final String URL_LOGOUT = URL_ROOT + "/driver/logout";
+    private final String URL_UPDATE_PASSWORD = URL_ROOT + "/driver/update/password";
     private final String URL_RESPOND_TO_NEW_ORDER = URL_ROOT + "/driver/order/respond";
     private final String URL_GET_ORDERS = URL_ROOT + "/driver/orders";
     private final String URL_FINISH_ORDER = URL_ROOT + "/driver/order/finish";
@@ -155,6 +158,35 @@ public class Communicator {
         return resultCode;
     }
 
+    public boolean logout() {
+        int resultCode = -1;
+        ContentValues values = new ContentValues();
+        values.put("id", ApplicationPreferences.getDriver().getId());
+        values.put("stateId", State.NOT_IN_SERVICE.getValue());
+        values.put("latitude", 0);
+        values.put("longitude", 0);
+        String response = HTTPHandler.sendPOST(URL_LOGOUT, values);
+
+        if (response != null) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                boolean result = jsonObject.getBoolean("success");
+                if (result) {
+                    ApplicationPreferences.saveDriver(null);
+                    Log.i(DEBUG_TAG, "Logout success");
+                } else {
+                    Log.i(DEBUG_TAG, "Logout failed");
+                }
+                return result;
+            } catch (JSONException e) {
+                Log.e(DEBUG_TAG, e.toString());
+            } catch (NullPointerException e) {
+                Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
+            }
+        }
+        return false;
+    }
+
     public boolean respondToNewOrder(int orderId, boolean isAccepted) {
         ContentValues values = new ContentValues();
         values.put("orderId", orderId);
@@ -243,6 +275,35 @@ public class Communicator {
         ConnectivityManager cm = (ConnectivityManager) ApplicationContext.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    public int changePassword(String username, String oldPassword, String newPassword) {
+        int resultCode = -1;
+        ContentValues values = new ContentValues();
+        values.put("username", username);
+        values.put("oldPassword", oldPassword);
+        values.put("newPassword", newPassword);
+        String response = HTTPHandler.sendPOST(URL_UPDATE_PASSWORD, values);
+
+        if (response != null) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                resultCode = jsonObject.getInt("success");
+                switch (resultCode) {
+                    case 0:
+                        Log.i(DEBUG_TAG, "Password change success");
+                        break;
+                    case 1:
+                        Log.i(DEBUG_TAG, "Old password incorrect");
+                        break;
+                }
+            } catch (JSONException e) {
+                Log.e(DEBUG_TAG, e.toString());
+            } catch (NullPointerException e) {
+                Log.e(DEBUG_TAG, "Server error occurred " + e.toString());
+            }
+        }
+        return resultCode;
     }
 }
 
