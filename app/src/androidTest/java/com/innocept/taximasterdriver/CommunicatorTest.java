@@ -32,8 +32,8 @@ public class CommunicatorTest {
 
     @Test
     public void testLogin() {
-        int resultSuccess = communicator.login("anuradha", "anuradha");
-        int resultFailed = communicator.login("anuradha", "ravidu");
+        int resultSuccess = communicator.login("anuradha", "anuradha1234");
+        int resultFailed = communicator.login("anuradha", "anuradha");
 
         assertThat(resultSuccess, is(0));
         assertThat(resultFailed, is(1));

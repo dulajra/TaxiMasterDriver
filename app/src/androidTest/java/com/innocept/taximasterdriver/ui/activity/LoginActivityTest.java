@@ -55,85 +55,79 @@ public class LoginActivityTest {
 
     @Test
     public void testGenerated() {
-        // Used to provide time delays between actions, see details at http://droidtestlab.com/delay.html
-        IdlingResource idlingResource;
 
-        idlingResource = startTiming(8300);
-        // Set text to 'anuradha' in AppCompatEditText with id R.id.input_password
-        onView(withId(R.id.input_password)).perform(replaceText("anuradha"));
-        stopTiming(idlingResource);
+        // Set text to 'anuradha1234' in AppCompatEditText with id R.id.input_password
+        onView(withId(R.id.input_password)).perform(replaceText("anuradha1234"));
 
-        idlingResource = startTiming(8300);
         // Set text to 'anuradha' in AppCompatEditText with id R.id.input_username
         onView(withId(R.id.input_username)).perform(replaceText("anuradha"));
-        stopTiming(idlingResource);
 
-        idlingResource = startTiming(8300);
         // Click at AppCompatButton with id R.id.btn_sign_in
         onView(withId(R.id.btn_sign_in)).perform(click());
-        stopTiming(idlingResource);
 
-        idlingResource = startTiming(4500);
         // Click at AppCompatButton with id R.id.button_state_available
         onView(withId(R.id.button_state_available)).perform(click());
-        stopTiming(idlingResource);
 
-        idlingResource = startTiming(1300);
         // Check Switch with id R.id.switch_location_updates
         onView(withId(R.id.switch_location_updates)).perform(click());
-        stopTiming(idlingResource);
 
-        idlingResource = startTiming(1400);
         // Click at AppCompatButton with id R.id.button_state_not_in_service
         onView(withId(R.id.button_state_not_in_service)).perform(click());
-        stopTiming(idlingResource);
 
-        idlingResource = startTiming(1400);
         // Uncheck Switch with id R.id.switch_location_updates
         onView(withId(R.id.switch_location_updates)).perform(click());
-        stopTiming(idlingResource);
+
+        // Open options menu
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Click at menu item with text 'Logout' and id R.id.action_logout
+        onView(withText("Logout")).perform(click());
+
+        // Click at AppCompatButton with id android.R.id.button2
+        onView(withId(android.R.id.button2)).perform(click());
+
+        // Open options menu
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Click at menu item with text 'Settings' and id R.id.action_settings
+        onView(withText("Settings")).perform(click());
+
+        // Swipe up at ListView with id android.R.id.list
+        onView(withId(android.R.id.list)).perform(swipeUp());
+
+        // Swipe down at ListView with id android.R.id.list
+        onView(withId(android.R.id.list)).perform(swipeDown());
+
+        // Click at ImageButton with child index 1 of parent with id R.id.toolbar
+        onView(nthChildOf(withId(R.id.toolbar), 1)).perform(click());
+
+        // Open options menu
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        // Click at menu item with text 'Logout' and id R.id.action_logout
+        onView(withText("Logout")).perform(click());
+
+        // Click at AppCompatButton with id android.R.id.button1
+        onView(withId(android.R.id.button1)).perform(click());
+
     }
 
 
-    // See details at http://droidtestlab.com/delay.html
-    public IdlingResource startTiming(long time) {
-        IdlingResource idlingResource = new ElapsedTimeIdlingResource(time);
-        Espresso.registerIdlingResources(idlingResource);
-        return idlingResource;
-    }
-
-    public void stopTiming(IdlingResource idlingResource) {
-        Espresso.unregisterIdlingResources(idlingResource);
-    }
-
-    public class ElapsedTimeIdlingResource implements IdlingResource {
-        private long startTime;
-        private final long waitingTime;
-        private ResourceCallback resourceCallback;
-
-        public ElapsedTimeIdlingResource(long waitingTime) {
-            this.startTime = System.currentTimeMillis();
-            this.waitingTime = waitingTime;
-        }
-
-        @Override
-        public String getName() {
-            return ElapsedTimeIdlingResource.class.getName() + ":" + waitingTime;
-        }
-
-        @Override
-        public boolean isIdleNow() {
-            long elapsed = System.currentTimeMillis() - startTime;
-            boolean idle = (elapsed >= waitingTime);
-            if (idle) {
-                resourceCallback.onTransitionToIdle();
+    public static Matcher<View> nthChildOf(final Matcher<View> parentMatcher, final int childPosition) {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
             }
-            return idle;
-        }
 
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
-            this.resourceCallback = resourceCallback;
-        }
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view.getParent() instanceof ViewGroup)) {
+                    return false;
+                }
+                ViewGroup group = (ViewGroup) view.getParent();
+                return parentMatcher.matches(group) && view.equals(group.getChildAt(childPosition));
+            }
+        };
     }
+
 }
