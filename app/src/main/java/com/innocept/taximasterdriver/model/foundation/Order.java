@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class Order implements Serializable{
 
+    private int customerId;
     private int id;
     private String origin;
     private String destination;
@@ -119,6 +120,14 @@ public class Order implements Serializable{
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public enum OrderState {

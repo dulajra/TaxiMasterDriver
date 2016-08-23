@@ -32,7 +32,7 @@ public class Communicator {
 
     private final String DEBUG_TAG = Communicator.class.getSimpleName();
 
-    private final String URL_ROOT = "http://taximaster.herokuapp.com";
+    private final String URL_ROOT = "http://62643790.ngrok.io";
     private final String URL_UPDATE_STATE = URL_ROOT + "/driver/update/state";
     private final String URL_UPDATE_LOCATION = URL_ROOT + "/driver/update/location";
     private final String URL_LOGIN = URL_ROOT + "/driver/login";
@@ -229,6 +229,7 @@ public class Communicator {
                         order.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jsonObject.getString("time")));
                         order.setOrderState(Order.OrderState.valueOf(jsonObject.getString("state")));
                         order.setNote(jsonObject.getString("note"));
+                        order.setCustomerId(jsonObject.getInt("customerId"));
                     } else if (type == 1) {
                         order.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(jsonObject.getString("startTime")));
                     }
@@ -252,7 +253,12 @@ public class Communicator {
         values.put("startTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(order.getTime()));
         values.put("endTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(order.getEndTime()));
         values.put("origin", order.getOrigin());
+        values.put("originLatitude", order.getOriginCoordinates().getLatitude());
+        values.put("originLongitude", order.getOriginCoordinates().getLongitude());
         values.put("destination", order.getDestination());
+        values.put("destinationLatitude", order.getDestinationCoordinates().getLatitude());
+        values.put("destinationLongitude", order.getDestinationCoordinates().getLongitude());
+        values.put("customerId", order.getCustomerId());
         values.put("distance", order.getDistance());
         values.put("contact", order.getContact());
         values.put("fare", order.getFare());

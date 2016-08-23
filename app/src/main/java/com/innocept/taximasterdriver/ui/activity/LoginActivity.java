@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         inputLayoutUserName = (TextInputLayout) findViewById(R.id.input_layout_username);
-        inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_username);
+        inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_password);
         inputUserName = (EditText) findViewById(R.id.input_username);
         inputPassword = (EditText) findViewById(R.id.input_password);
         btnSignIn = (Button) findViewById(R.id.btn_sign_in);
