@@ -232,9 +232,9 @@ public class CurrentOrderActivity extends AppCompatActivity implements OnMapRead
                             polyLines[polylineType] = mMap.addPolyline(polylineOptions);
 
                         } else if (direction.getStatus().equals(RequestResult.NOT_FOUND)) {
-                            Toast.makeText(CurrentOrderActivity.this, "No route cannot be found.", Toast.LENGTH_LONG);
+                            Toast.makeText(CurrentOrderActivity.this, "No route cannot be found.", Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(CurrentOrderActivity.this, "Error occurred. Contact developers if error continues.", Toast.LENGTH_LONG);
+                            Toast.makeText(CurrentOrderActivity.this, "Error occurred. Contact developers if error continues.", Toast.LENGTH_LONG).show();
                             Log.e(DEBUG_TAG, "Error in while getting directions: " + direction.getStatus());
                         }
                     }
