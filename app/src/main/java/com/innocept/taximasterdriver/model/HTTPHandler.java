@@ -41,7 +41,7 @@ public class HTTPHandler {
                 }
                 is.close();
                 json = sb.toString();
-                Log.i("sendGET", json);
+                Log.v("sendGET", json);
 //                jsonObject = new JSONObject(json);
             } catch (Exception e) {
                 Log.e("sendGET", "Error in makeHttpRequest " + e.toString());
@@ -81,7 +81,7 @@ public class HTTPHandler {
                 }
                 is.close();
                 json = sb.toString();
-                Log.i("sendPOST", json);
+                Log.v("sendPOST", json);
 //                jsonObject = new JSONObject(json);
             } catch (Exception e) {
                 Log.e("sendPOST", "Error in makeHttpRequest " + e.toString());

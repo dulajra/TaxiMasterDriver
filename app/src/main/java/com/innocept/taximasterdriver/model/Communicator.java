@@ -32,8 +32,8 @@ public class Communicator {
 
     private final String DEBUG_TAG = Communicator.class.getSimpleName();
 
-//    private final String URL_ROOT = "http://taximaster.herokuapp.com";
-    private final String URL_ROOT = "http://f12962c2.ngrok.io";
+    private final String URL_ROOT = "http://taximaster.herokuapp.com";
+//    private final String URL_ROOT = "http://92893741.ngrok.io";
 
     private final String URL_UPDATE_STATE = URL_ROOT + "/driver/update/state";
     private final String URL_UPDATE_LOCATION = URL_ROOT + "/driver/update/location";
@@ -59,9 +59,9 @@ public class Communicator {
                 boolean result = jsonObject.getBoolean("success");
                 if (result) {
                     ApplicationPreferences.setCurrentState(state);
-                    Log.i(DEBUG_TAG, "Driver state update success");
+                    Log.v(DEBUG_TAG, "Driver state update success");
                 } else {
-                    Log.i(DEBUG_TAG, "Driver state update failed");
+                    Log.w(DEBUG_TAG, "Driver state update failed");
                 }
                 return result;
             } catch (JSONException e) {
@@ -86,9 +86,9 @@ public class Communicator {
                 boolean result = jsonObject.getBoolean("success");
                 if (result) {
                     ApplicationPreferences.setCurrentState(state);
-                    Log.i(DEBUG_TAG, "Driver state update success");
+                    Log.v(DEBUG_TAG, "Driver state update success");
                 } else {
-                    Log.i(DEBUG_TAG, "Driver state update failed");
+                    Log.w(DEBUG_TAG, "Driver state update failed");
                 }
                 return result;
             } catch (JSONException e) {
@@ -111,10 +111,10 @@ public class Communicator {
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 boolean result = jsonObject.getBoolean("success");
-                if (result) {
-                    Log.i(DEBUG_TAG, "Driver location update success");
+                if (!result) {
+                    Log.v(DEBUG_TAG, "Driver location update success");
                 } else {
-                    Log.i(DEBUG_TAG, "Driver location update failed");
+                    Log.w(DEBUG_TAG, "Driver location update failed");
                 }
                 return result;
             } catch (JSONException e) {
@@ -144,11 +144,11 @@ public class Communicator {
                         driver = new Gson().fromJson(jsonObject.getJSONObject("driver").toString(), Driver.class);
                         ApplicationPreferences.saveDriver(driver);
                         resultCode = 0;
-                        Log.i(DEBUG_TAG, "Login success");
+                        Log.v(DEBUG_TAG, "Login success");
                         break;
                     case 1:
                         resultCode = 1;
-                        Log.i(DEBUG_TAG, "Username or password is incorrect");
+                        Log.w(DEBUG_TAG, "Username or password is incorrect");
                         break;
                 }
             } catch (JSONException e) {
@@ -175,9 +175,9 @@ public class Communicator {
                 boolean result = jsonObject.getBoolean("success");
                 if (result) {
                     ApplicationPreferences.saveDriver(null);
-                    Log.i(DEBUG_TAG, "Logout success");
+                    Log.v(DEBUG_TAG, "Logout success");
                 } else {
-                    Log.i(DEBUG_TAG, "Logout failed");
+                    Log.w(DEBUG_TAG, "Logout failed");
                 }
                 return result;
             } catch (JSONException e) {
@@ -299,10 +299,10 @@ public class Communicator {
                 resultCode = jsonObject.getInt("success");
                 switch (resultCode) {
                     case 0:
-                        Log.i(DEBUG_TAG, "Password change success");
+                        Log.v(DEBUG_TAG, "Password change success");
                         break;
                     case 1:
-                        Log.i(DEBUG_TAG, "Old password incorrect");
+                        Log.w(DEBUG_TAG, "Old password incorrect");
                         break;
                 }
             } catch (JSONException e) {

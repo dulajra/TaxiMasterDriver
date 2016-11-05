@@ -44,7 +44,6 @@ public class ApplicationContext extends Application {
             }
         });
 
-        OneSignal.sendTag("userType", "taxiDriver");
     }
 
     @Override
